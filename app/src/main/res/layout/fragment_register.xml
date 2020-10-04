@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="305dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="584dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="429dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/inputRegFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="first name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/inputRegLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="last name"
+            android:layout_below="@+id/inputRegFirstName"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/inputRegUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@username"
+            android:layout_below="@id/inputRegLastName"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/inputRegPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="password"
+            android:layout_below="@id/inputRegUserName"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:id="@+id/takePicText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/inputRegPassword"
+            android:layout_marginTop="0dp"
+            android:text="Take Profile Picture"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/holo_red_dark" />
+
+        <Button
+            android:id="@+id/button_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/takePicText"
+            android:text="Register" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

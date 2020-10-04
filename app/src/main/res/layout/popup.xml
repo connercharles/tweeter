@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_window"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@android:color/background_light"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+
+
+            <TextView
+                android:id="@+id/text_label"
+                android:layout_width="179dp"
+                android:layout_height="34dp"
+                android:text="What's on your mind?"
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/text_prompt"
+                android:layout_width="277dp"
+                android:layout_height="157dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="So there I was..."
+                android:inputType="textMultiLine"
+                android:layout_below="@+id/text_label"
+                android:maxLines="10" />
+
+            <Button
+                android:id="@+id/popup_exit"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="48dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="48dp"
+                android:layout_toRightOf="@+id/text_label"
+                android:background="@color/white"
+                android:text="X"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_post"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:background="#009688"
+            android:text="Post"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</LinearLayout>

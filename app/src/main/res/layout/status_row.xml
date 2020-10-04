@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".view.main.FeedFragment">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/statWrap">
+
+        <ImageView
+            android:id="@+id/statusAuthorImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/userImageContentDescription" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/statusAuthorImage">
+
+            <TextView
+                android:id="@+id/statusAuthorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="@string/sampleUserName"/>
+
+            <TextView
+                android:id="@+id/statusAuthorAlias"
+                android:layout_toRightOf="@+id/statusAuthorName"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/sampleAlias"/>
+
+            <TextView
+                android:id="@+id/statusPostTime"
+                android:layout_below="@+id/statusAuthorName"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Sept 15 2020, 4:20 PM"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/statusMessage"
+        android:text="Message Description"
+        android:layout_below="@id/statWrap"
+        android:textColorHighlight="@color/colorAccent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="8pt"
+        android:textColor="@android:color/black"/>
+
+</RelativeLayout>
