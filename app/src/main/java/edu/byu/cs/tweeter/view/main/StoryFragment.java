@@ -1,6 +1,13 @@
 package edu.byu.cs.tweeter.view.main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +27,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -99,13 +108,6 @@ public class StoryFragment extends Fragment implements StoryPresenter.View{
             userName = itemView.findViewById(R.id.statusAuthorName);
             postTime = itemView.findViewById(R.id.statusPostTime);
             statusMessage = itemView.findViewById(R.id.statusMessage);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         void bindStatus(Status status) {
@@ -115,7 +117,89 @@ public class StoryFragment extends Fragment implements StoryPresenter.View{
             DateTimeFormatter postFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
 
             postTime.setText(status.getWhenPosted().format(postFormatter));
-            statusMessage.setText(status.getMessage());
+            parseMessage(status);
+        }
+
+        private void parseMessage(Status status) {
+            String message = status.getMessage();
+            List<String> containedUrls = new ArrayList<>();
+            List<String> containedMentions = new ArrayList<>();
+            String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
+            Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+            Matcher urlMatcher = pattern.matcher(message);
+
+            while (urlMatcher.find()) {
+                containedUrls.add(message.substring(urlMatcher.start(0),
+                        urlMatcher.end(0)));
+            }
+
+            Matcher mentionMatcher = Pattern.compile("^[@]\\w+|(?<=\\s)[@]\\w+").matcher(message);
+            while (mentionMatcher.find()) {
+                containedMentions.add(message.substring(mentionMatcher.start(0),
+                        mentionMatcher.end(0)));
+            }
+
+            SpannableString ss = new SpannableString(message);
+            setClickableUrl(status, containedUrls, ss);
+            setClickableMention(status, containedMentions, ss);
+
+        }
+
+        private void setClickableUrl(Status status, List<String> containedUrls, SpannableString ss) {
+            String message = status.getMessage();
+            for (String word : containedUrls) {
+                int firstIndex = message.indexOf(word);
+                int lastIndex = firstIndex + word.length();
+
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View textView) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(word));
+                        startActivity(browserIntent);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(true);
+                    }
+                };
+                ss.setSpan(clickableSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                statusMessage.setMovementMethod(LinkMovementMethod.getInstance());
+                statusMessage.setText(ss);
+            }
+        }
+
+        private void setClickableMention(Status status, List<String> containedUrls, SpannableString ss) {
+            String message = status.getMessage();
+            for (String word : containedUrls) {
+                int firstIndex = message.indexOf(word);
+                int lastIndex = firstIndex + word.length();
+
+                ClickableSpan clickableSpan = new ClickableSpan() {
+                    @Override
+                    public void onClick(View textView) {
+                        Intent intent = new Intent(getActivity(), UserActivity.class);
+
+                        intent.putExtra(UserActivity.CLICKED_USER, status.getAuthor());
+                        intent.putExtra(UserActivity.MAIN_USER, user);
+                        intent.putExtra(UserActivity.AUTH_TOKEN_KEY, authToken);
+
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(true);
+                    }
+                };
+                ss.setSpan(clickableSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                statusMessage.setMovementMethod(LinkMovementMethod.getInstance());
+                statusMessage.setText(ss);
+            }
         }
     }
 

@@ -9,19 +9,25 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
+import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -344,7 +350,7 @@ public class ServerFacade {
 
         for (User user: users) {
             for (int i = 0; i < count; i++) {
-                String message = "test" + i + "\n" + user.getAlias();
+                String message = "test" + i + "\n" + user.getAlias() + "\nhttps://www.google.com @BenDover\nhttp://www.byu.edu";
                 Status stat = new Status(message, user);
                 statuses.add(stat);
             }
@@ -353,16 +359,27 @@ public class ServerFacade {
         return statuses;
     }
 
-     List<Status> getDummyStatusForUser(int count, User author) {
+    List<Status> getDummyStatusForUser(int count, User author) {
 
         List<Status> statuses = new ArrayList<>(count);
 
         for(int i = 0; statuses.size() < count; i++) {
-            String message = "test" + i + "\n" + author.getAlias();
+            String message = "test" + i + "\n" + author.getAlias() + "\nhttps://www.google.com @BenDover\nhttp://www.byu.edu";
             Status stat = new Status(message, author);
             statuses.add(stat);
         }
 
         return statuses;
+    }
+
+    public FollowNumberResponse getFollowNumbers(FollowNumberRequest followNumberRequest){
+        return new FollowNumberResponse(20, 13);
+    }
+
+    public FollowResponse follow(FollowRequest followRequest){
+        return new FollowResponse();
+    }
+    public UnfollowResponse unfollow(UnfollowRequest unfollowRequest){
+        return new UnfollowResponse();
     }
 }

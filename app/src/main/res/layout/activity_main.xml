@@ -78,10 +78,17 @@
                         android:orientation="horizontal">
 
                     <TextView
-                            android:id="@+id/followeeCount"
+                            android:id="@+id/followeeCountLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/followeeCount"
+                            android:paddingHorizontal="5sp"/>
+
+                    <TextView
+                            android:id="@+id/followeeCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-42"
                             android:paddingHorizontal="5sp"/>
 
                     <Space
@@ -89,10 +96,17 @@
                             android:layout_height="wrap_content"/>
 
                     <TextView
-                            android:id="@+id/followerCount"
+                            android:id="@+id/followerCountLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/followerCount"
+                            android:paddingHorizontal="5sp"/>
+
+                    <TextView
+                            android:id="@+id/followerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-42"
                             android:paddingHorizontal="5sp"/>
 
                 </LinearLayout>

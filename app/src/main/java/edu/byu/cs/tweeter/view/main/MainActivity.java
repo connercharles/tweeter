@@ -18,29 +18,38 @@ import com.google.android.material.tabs.TabLayout;
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
-import edu.byu.cs.tweeter.presenter.LogoutPresenter;
+import edu.byu.cs.tweeter.presenter.MainActivityPresenter;
 import edu.byu.cs.tweeter.view.StartUpActivity;
-import edu.byu.cs.tweeter.view.asyncTasks.GetFollowingTask;
+import edu.byu.cs.tweeter.view.asyncTasks.FollowNumberTask;
 import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityPresenter.View, LogoutTask.Observer,
+        FollowNumberTask.Observer {
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     User user;
+    private MainActivityPresenter presenter;
+
+    private TextView followeeCount;
+    private TextView followerCount;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        presenter = new MainActivityPresenter(this);
 
         user = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
         if(user == null) {
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getSupportFragmentManager();
-                Popup popup = Popup.newInstance();
+                Popup popup = Popup.newInstance(user, authToken);
                 popup.show(fm, "Popup_Fragment");
             }
         });
@@ -77,59 +86,62 @@ public class MainActivity extends AppCompatActivity {
         ImageView userImageView = findViewById(R.id.userImage);
         userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
 
-        TextView followeeCount = findViewById(R.id.followeeCount);
-        followeeCount.setText("Following: " + "-42");
+        followeeCount = findViewById(R.id.followeeCount);
+        followerCount = findViewById(R.id.followerCount);
 
-        TextView followerCount = findViewById(R.id.followerCount);
-        followerCount.setText("Followers: " + "-42");
+        FollowNumberTask followNumberTask = new FollowNumberTask(presenter, MainActivity.this);
+        FollowNumberRequest request = new FollowNumberRequest(user);
+        followNumberTask.execute(request);
 
         TextView logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(MainActivity.this, StartUpActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this, StartUpActivity.class);
+//                startActivity(intent);
+
+                LogoutTask logoutTask = new LogoutTask(presenter, MainActivity.this);
+                LogoutRequest request = new LogoutRequest(authToken);
+                logoutTask.execute(request);
             }
         });
 
 
-//        logout.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view){ //******************************************** TODO how should we do logging out???
-//                class LogoutClass implements LogoutPresenter.View, LogoutTask.Observer {
-//
-//                    @Override
-//                    public void logoutSuccessful(LogoutResponse logoutResponse) {
-//                        Intent intent = new Intent(MainActivity.this, StartUpActivity.class);
-//                        startActivity(intent);
-//                    }
-//
-//                    @Override
-//                    public void logoutUnsuccessful(LogoutResponse logoutResponse) {
-//                        Toast.makeText(MainActivity.this, "Failed to logout. " + logoutResponse.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
-//
-//                    @Override
-//                    public void handleException(Exception ex) {
-//                        Log.e("Logout", ex.getMessage(), ex);
-//                        Toast.makeText(MainActivity.this, "Failed to logout because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//
-//
-//                LogoutRequest logoutRequest = new LogoutRequest(authToken);
-//                LogoutTask loginTask = new LogoutTask(presenter, LogoutClass.class);
-//                logoutTask.execute(logoutRequest);
-//
-//
-//                new LogoutClass();
-//            }
-//        });
     }
 
-    private void getFollowNumbers(){ //***************************** TODO how do I do this????
-//        GetFollowingTask getFollowingTask = new GetFollowingTask(presenter, this);
-//        FollowingRequest request = new FollowingRequest(user, PAGE_SIZE, lastFollowee);
-//        getFollowingTask.execute(request);
+    @Override
+    public void logoutSuccessful(LogoutResponse logoutResponse) {
+        Intent intent = new Intent(MainActivity.this, StartUpActivity.class);
+        startActivity(intent);
     }
+
+    @Override
+    public void logoutUnsuccessful(LogoutResponse logoutResponse) {
+        Toast.makeText(MainActivity.this, "Failed to logout. " + logoutResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleLogoutException(Exception ex) {
+        Log.e("Logout", ex.getMessage(), ex);
+        Toast.makeText(MainActivity.this, "Failed to logout because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void followNumberSuccessful(FollowNumberResponse followNumberResponse) {
+        followeeCount.setText(String.valueOf(followNumberResponse.getFollowingNumber()));
+        followerCount.setText(String.valueOf(followNumberResponse.getFollowerNumber()));
+    }
+
+    @Override
+    public void followNumberUnsuccessful(FollowNumberResponse followNumberResponse) {
+        Toast.makeText(MainActivity.this, "Failed to get follow numbers. " + followNumberResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleFollowNumException(Exception ex) {
+        Log.e("FollowNumber", ex.getMessage(), ex);
+        Toast.makeText(MainActivity.this, "Failed to get follow numbers because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+
 }

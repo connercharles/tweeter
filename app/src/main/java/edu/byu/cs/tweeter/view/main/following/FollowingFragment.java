@@ -124,6 +124,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
                         Intent intent = new Intent(getActivity(), UserActivity.class);
 
                         intent.putExtra(UserActivity.CLICKED_USER, user);
+                        intent.putExtra(UserActivity.MAIN_USER, user);
                         intent.putExtra(UserActivity.AUTH_TOKEN_KEY, authToken);
 
                         startActivity(intent);

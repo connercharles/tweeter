@@ -5,19 +5,20 @@ import android.os.AsyncTask;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
+import edu.byu.cs.tweeter.presenter.MainActivityPresenter;
 
 public class LogoutTask extends AsyncTask<LogoutRequest, Void, LogoutResponse> {
-    private final LogoutPresenter presenter;
+    private final MainActivityPresenter presenter;
     private final LogoutTask.Observer observer;
     private Exception exception;
 
     public interface Observer {
         void logoutSuccessful(LogoutResponse logoutResponse);
         void logoutUnsuccessful(LogoutResponse logoutResponse);
-        void handleException(Exception ex);
+        void handleLogoutException(Exception ex);
     }
 
-    public LogoutTask(LogoutPresenter presenter, LogoutTask.Observer observer) {
+    public LogoutTask(MainActivityPresenter presenter, LogoutTask.Observer observer) {
         if(observer == null) {
             throw new NullPointerException();
         }
@@ -28,15 +29,15 @@ public class LogoutTask extends AsyncTask<LogoutRequest, Void, LogoutResponse> {
 
     @Override
     protected LogoutResponse doInBackground(LogoutRequest... logoutRequests) {
-        LogoutResponse logoutResponseResponse = null;
-        logoutResponseResponse = presenter.logout(logoutRequests[0]);
-        return logoutResponseResponse;
+        LogoutResponse logoutResponse = null;
+        logoutResponse = presenter.logout(logoutRequests[0]);
+        return logoutResponse;
     }
 
     @Override
     protected void onPostExecute(LogoutResponse logoutResponse) {
         if(exception != null) {
-            observer.handleException(exception);
+            observer.handleLogoutException(exception);
         } else if(logoutResponse.isSuccess()) {
             observer.logoutSuccessful(logoutResponse);
         } else {
