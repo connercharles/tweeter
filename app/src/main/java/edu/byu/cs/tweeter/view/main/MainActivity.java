@@ -97,9 +97,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         logout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-//                Intent intent = new Intent(MainActivity.this, StartUpActivity.class);
-//                startActivity(intent);
-
                 LogoutTask logoutTask = new LogoutTask(presenter, MainActivity.this);
                 LogoutRequest request = new LogoutRequest(authToken);
                 logoutTask.execute(request);

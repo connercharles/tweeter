@@ -1,12 +1,14 @@
 package edu.byu.cs.tweeter.view.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -14,14 +16,21 @@ import androidx.fragment.app.DialogFragment;
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.PostRequest;
+import edu.byu.cs.tweeter.model.service.response.PostResponse;
+import edu.byu.cs.tweeter.presenter.PostPresenter;
+import edu.byu.cs.tweeter.view.asyncTasks.PostTask;
 
-public class Popup extends DialogFragment {
+public class Popup extends DialogFragment implements PostPresenter.View, PostTask.Observer {
     private static final String USER_KEY = "UserKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     EditText prompt;
     Button postBtn;
     Button exitBtn;
+
+    private PostPresenter presenter;
+
 
     public static Popup newInstance(User user, AuthToken authToken) {
         Popup frag = new Popup();
@@ -40,6 +49,8 @@ public class Popup extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.popup, container);
 
+        presenter = new PostPresenter(this);
+
         //noinspection ConstantConditions
         User user = (User) getArguments().getSerializable(USER_KEY);
         AuthToken authToken = (AuthToken) getArguments().getSerializable(AUTH_TOKEN_KEY);
@@ -54,7 +65,9 @@ public class Popup extends DialogFragment {
         postBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                PostTask postTask = new PostTask(presenter, Popup.this);
+                PostRequest request = new PostRequest(authToken, user, prompt.getText().toString());
+                postTask.execute(request);
             }
         });
         exitBtn.setOnClickListener(new View.OnClickListener() {
@@ -76,5 +89,21 @@ public class Popup extends DialogFragment {
         prompt.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    public void postSuccessful(PostResponse postResponse) {
+        dismiss();
+    }
+
+    @Override
+    public void postUnsuccessful(PostResponse postResponse) {
+        Toast.makeText(getActivity(), "Failed to post status. " + postResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleException(Exception ex) {
+        Log.e("PostStatus", ex.getMessage(), ex);
+        Toast.makeText(getActivity(), "Failed to post status because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

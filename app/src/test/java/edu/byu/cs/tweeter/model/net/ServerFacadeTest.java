@@ -511,6 +511,7 @@ class ServerFacadeTest {
         Assertions.assertTrue(response.getStory().contains(status84));
         Assertions.assertFalse(response.getHasMorePages());
     }
+
     /**
      * LOGIN
      */

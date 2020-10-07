@@ -25,8 +25,6 @@ import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
-import edu.byu.cs.tweeter.presenter.FollowNumberPresenter;
-import edu.byu.cs.tweeter.presenter.MainActivityPresenter;
 import edu.byu.cs.tweeter.presenter.UserActivityPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowNumberTask;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
