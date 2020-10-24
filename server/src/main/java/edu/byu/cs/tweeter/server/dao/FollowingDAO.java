@@ -5,16 +5,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 
 /**
  * A DAO for accessing 'following' data from the database.
  */
 public class FollowingDAO {
     // This is the hard coded followee data returned by the 'getFollowees()' method
-    private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
-    private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+    private static final String MALE_IMAGE_URL = "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg";
+    private static final String FEMALE_IMAGE_URL = "https://admin.itsnicethat.com/images/8dKc6Jf49NsPRj0RJaKrFUOlcYI=/31529/format-webp%7Cwidth-2880/50895e095c3e3c550a0049ff.jpg";
 
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
     private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
@@ -47,7 +55,7 @@ public class FollowingDAO {
     public Integer getFolloweeCount(User follower) {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert follower != null;
-        return getDummyFollowees().size();
+        return getDummyUsers().size();
     }
 
     /**
@@ -65,7 +73,7 @@ public class FollowingDAO {
         assert request.getLimit() > 0;
         assert request.getFollower() != null;
 
-        List<User> allFollowees = getDummyFollowees();
+        List<User> allFollowees = getDummyUsers();
         List<User> responseFollowees = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -83,6 +91,42 @@ public class FollowingDAO {
         }
 
         return new FollowingResponse(responseFollowees, hasMorePages);
+    }
+
+    public FollowerResponse getFollowers(FollowerRequest request) {
+        assert request.getLimit() > 0;
+        assert request.getFollowee() != null;
+
+        List<User> allFollowers = getDummyUsers();
+        List<User> responseFollowers = new ArrayList<>(request.getLimit());
+
+        boolean hasMorePages = false;
+
+        if(request.getLimit() > 0) {
+            if (allFollowers != null) {
+                int followersIndex = getFollowersStartingIndex(request.getLastFollower(), allFollowers);
+
+                for(int limitCounter = 0; followersIndex < allFollowers.size() && limitCounter < request.getLimit(); followersIndex++, limitCounter++) {
+                    responseFollowers.add(allFollowers.get(followersIndex));
+                }
+
+                hasMorePages = followersIndex < allFollowers.size();
+            }
+        }
+
+        return new FollowerResponse(responseFollowers, hasMorePages);
+    }
+
+    public FollowResponse follow(FollowRequest followRequest){
+        return new FollowResponse();
+    }
+
+    public UnfollowResponse unfollow(UnfollowRequest unfollowRequest){
+        return new UnfollowResponse();
+    }
+
+    public FollowNumberResponse getFollowNumbers(FollowNumberRequest followNumberRequest){
+        return new FollowNumberResponse(20, 13);
     }
 
     /**
@@ -116,12 +160,41 @@ public class FollowingDAO {
     }
 
     /**
+     * Determines the index for the first follower in the specified 'allFollowers' list that should
+     * be returned in the current request. This will be the index of the next follower after the
+     * specified 'lastFollower'.
+     *
+     * @param lastFollower the last follower that was returned in the previous request or null if
+     *                     there was no previous request.
+     * @param allFollowers the generated list of followers from which we are returning paged results.
+     * @return the index of the first follower to be returned.
+     */
+    private int getFollowersStartingIndex(User lastFollower, List<User> allFollowers) {
+
+        int followersIndex = 0;
+
+        if(lastFollower != null) {
+            // This is a paged request for something after the first page. Find the first item
+            // we should return
+            for (int i = 0; i < allFollowers.size(); i++) {
+                if(lastFollower.equals(allFollowers.get(i))) {
+                    // We found the index of the last item returned last time. Increment to get
+                    // to the first one we should return
+                    followersIndex = i + 1;
+                }
+            }
+        }
+
+        return followersIndex;
+    }
+
+    /**
      * Returns the list of dummy followee data. This is written as a separate method to allow
      * mocking of the followees.
      *
      * @return the followees.
      */
-    List<User> getDummyFollowees() {
+    List<User> getDummyUsers() {
         return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
                 user19, user20);

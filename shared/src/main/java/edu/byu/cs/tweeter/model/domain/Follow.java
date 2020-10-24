@@ -10,7 +10,7 @@ public class Follow {
     private final User follower;
     private final User followee;
 
-    public Follow(User follower, User followee) {
+    public Follow( User follower, User followee) {
         this.follower = follower;
         this.followee = followee;
     }

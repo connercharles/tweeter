@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".client.view.LoginActivity"
+            android:name=".client.view.StartUpActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,7 +22,13 @@
         </activity>
         <activity
             android:name=".client.view.main.MainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".client.view.main.UserActivity"
+            android:label="UserActivity"
+            android:parentActivityName=".client.view.main.MainActivity">
         </activity>
     </application>
 

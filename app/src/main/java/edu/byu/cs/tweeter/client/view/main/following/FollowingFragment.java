@@ -1,12 +1,7 @@
 package edu.byu.cs.tweeter.client.view.main.following;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +28,7 @@ import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.client.presenter.FollowingPresenter;
 import edu.byu.cs.tweeter.client.view.asyncTasks.GetFollowingTask;
+import edu.byu.cs.tweeter.client.view.main.UserActivity;
 import edu.byu.cs.tweeter.client.view.util.ImageUtils;
 
 /**
@@ -102,6 +103,8 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
         private final TextView userAlias;
         private final TextView userName;
 
+        private User clickedUser;
+
         /**
          * Creates an instance and sets an OnClickListener for the user's row.
          *
@@ -118,7 +121,13 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), UserActivity.class);
+
+                        intent.putExtra(UserActivity.CLICKED_USER, clickedUser);
+                        intent.putExtra(UserActivity.MAIN_USER, user);
+                        intent.putExtra(UserActivity.AUTH_TOKEN_KEY, authToken);
+
+                        startActivity(intent);
                     }
                 });
             } else {
@@ -134,6 +143,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
          * @param user the user.
          */
         void bindUser(User user) {
+            this.clickedUser = user;
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
             userAlias.setText(user.getAlias());
             userName.setText(user.getName());
@@ -147,7 +157,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
         private final List<User> users = new ArrayList<>();
 
-        private User lastFollowee;
+        private edu.byu.cs.tweeter.model.domain.User lastFollowee;
 
         private boolean hasMorePages;
         private boolean isLoading = false;
