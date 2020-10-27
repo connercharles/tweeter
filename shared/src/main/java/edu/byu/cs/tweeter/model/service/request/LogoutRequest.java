@@ -9,7 +9,13 @@ public class LogoutRequest {
         this.authToken = authToken;
     }
 
+    private LogoutRequest() {}
+
     public AuthToken getAuthToken() {
         return authToken;
+    }
+
+    public void setAuthToken(AuthToken authToken) {
+        this.authToken = authToken;
     }
 }

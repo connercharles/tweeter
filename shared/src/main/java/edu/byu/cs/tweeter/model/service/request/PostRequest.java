@@ -14,6 +14,20 @@ public class PostRequest {
         this.message = message;
     }
 
+    private PostRequest() {}
+
+    public void setAuthToken(AuthToken authToken) {
+        this.authToken = authToken;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public AuthToken getAuthToken() {
         return authToken;
     }

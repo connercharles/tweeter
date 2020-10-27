@@ -106,7 +106,7 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
                     unfollowTask.execute(request);
 
                     followBtn.setText(FOLLOW_STRING);
-                    followBtn.setBackgroundColor(Color.parseColor("#D81B60"));
+                    followBtn.setBackgroundColor(Color.parseColor("#0000FF"));
                     followBtn.setTextColor(Color.WHITE);
                 }
             }
