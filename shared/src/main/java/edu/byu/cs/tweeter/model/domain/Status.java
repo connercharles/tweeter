@@ -1,24 +1,28 @@
 package edu.byu.cs.tweeter.model.domain;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Status implements Comparable<Status> {
-    private final String message;
-    private final LocalDateTime whenPosted;
-    private final User author;
+    private String message;
+    private long whenPosted;
+    private User author;
 
+    private Status() {}
 
     public Status(String message, User author){
         this.message = message;
         this.author = author;
-        this.whenPosted = LocalDateTime.now();
+        this.whenPosted = Calendar.getInstance().getTimeInMillis();
     }
 
     public String getMessage() {
         return message;
     }
 
-    public LocalDateTime getWhenPosted() {
+    public long getWhenPosted() {
         return whenPosted;
     }
 
@@ -26,6 +30,17 @@ public class Status implements Comparable<Status> {
         return author;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setWhenPosted(long whenPosted) {
+        this.whenPosted = whenPosted;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -34,23 +49,28 @@ public class Status implements Comparable<Status> {
         Status status = (Status) o;
         return (author.equals(status.getAuthor())
                 && message.equals(status.getMessage())
-                && whenPosted.getDayOfMonth() == (status.getWhenPosted().getDayOfMonth())
-                && whenPosted.getHour() == (status.getWhenPosted().getHour())
-                && whenPosted.getMinute() == (status.getWhenPosted().getMinute())
-        );
+                && whenPosted == status.getWhenPosted());
     }
 
     @Override
     public String toString() {
+        LocalDateTime postString =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(whenPosted),
+                        TimeZone.getDefault().toZoneId());
         return "Status{" +
                 "User='" + author.getAlias() + '\'' +
-                ", date='" + whenPosted.toString() + '\'' +
+                ", date='" + postString + '\'' +
                 ", message='" + message + '}';
     }
 
     @Override
     public int compareTo(Status status) {
-        return this.getWhenPosted().compareTo(status.getWhenPosted());
+        if (this.getWhenPosted() < status.getWhenPosted()){
+            return -1;
+        } else if (this.getWhenPosted() > status.getWhenPosted()){
+            return 1;
+        }
+        return 0;
     }
 
 }

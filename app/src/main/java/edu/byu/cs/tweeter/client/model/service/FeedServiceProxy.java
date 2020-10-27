@@ -11,7 +11,6 @@ import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.client.util.ByteArrayUtils;
 
 public class FeedServiceProxy implements FeedService {
-
     static final String URL_PATH = "/getfeed";
 
     public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException {

@@ -70,7 +70,7 @@ public class StatusDAO {
         assert request.getLimit() > 0;
         assert request.getUser() != null;
 
-        List<Status> allStatuses = getDummyStatusForUser(20, request.getUser());
+        List<Status> allStatuses = getDummyStatuses(20);
         List<Status> responseStatuses = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -143,19 +143,6 @@ public class StatusDAO {
                 Status stat = new Status(message, user);
                 statuses.add(stat);
             }
-        }
-
-        return statuses;
-    }
-
-    List<Status> getDummyStatusForUser(int count, User author) {
-
-        List<Status> statuses = new ArrayList<>(count);
-
-        for(int i = 0; statuses.size() < count; i++) {
-            String message = "test" + i + "\n" + author.getAlias() + "\nhttps://www.google.com @BenDover\nhttp://www.byu.edu";
-            Status stat = new Status(message, author);
-            statuses.add(stat);
         }
 
         return statuses;

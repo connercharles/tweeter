@@ -23,10 +23,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,8 +119,10 @@ public class StoryFragment extends Fragment implements StoryPresenter.View{
             userAlias.setText(status.getAuthor().getAlias());
             userName.setText(status.getAuthor().getName());
             DateTimeFormatter postFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-
-            postTime.setText(status.getWhenPosted().format(postFormatter));
+            LocalDateTime whenPostedDateTime =
+                    LocalDateTime.ofInstant(Instant.ofEpochMilli(status.getWhenPosted()),
+                            TimeZone.getDefault().toZoneId());
+            postTime.setText(whenPostedDateTime.format(postFormatter));
             parseMessage(status);
         }
 
