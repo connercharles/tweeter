@@ -90,8 +90,6 @@ public class StatusDAO {
         return new StoryResponse(responseStatuses, hasMorePages);
     }
 
-
-
     private int getFeedStartingIndex(Status lastStatus, List<Status> allStatuses) {
 
         int feedIndex = 0;
@@ -130,8 +128,6 @@ public class StatusDAO {
         return feedIndex;
     }
 
-
-
     List<Status> getDummyStatuses(int count) {
         List<User> users = getDummyUsers();
 
@@ -148,7 +144,6 @@ public class StatusDAO {
         return statuses;
     }
 
-    // TODO is this okay???? they are dependent on each other??
     /**
      * Returns the list of dummy user data. This is written as a separate method to allow
      * mocking of the users.

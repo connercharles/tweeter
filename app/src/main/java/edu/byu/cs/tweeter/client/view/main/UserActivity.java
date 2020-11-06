@@ -17,14 +17,17 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.tabs.TabLayout;
 
 import edu.byu.cs.tweeter.R;
+import edu.byu.cs.tweeter.client.view.asyncTasks.IsFollowingTask;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
+import edu.byu.cs.tweeter.model.service.request.IsFollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.response.IsFollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.client.presenter.UserActivityPresenter;
 import edu.byu.cs.tweeter.client.view.asyncTasks.FollowNumberTask;
@@ -35,10 +38,12 @@ import edu.byu.cs.tweeter.client.view.main.following.FollowingFragment;
 import edu.byu.cs.tweeter.client.view.util.ImageUtils;
 
 public class UserActivity extends AppCompatActivity implements FollowNumberTask.Observer,
-        FollowTask.Observer, UnfollowTask.Observer, UserActivityPresenter.View {
+        FollowTask.Observer, UnfollowTask.Observer, UserActivityPresenter.View,
+        IsFollowingTask.Observer {
     private static final String LOG_TAG_FOLLOW_NUM = "FollowNumber";
     private static final String LOG_TAG_FOLLOW = "Follow";
     private static final String LOG_TAG_UNFOLLOW = "Unfollow";
+    private static final String LOG_TAG_ISFOLLOWING = "IsFollowing";
 
     public static final String CLICKED_USER = "ClickedUser";
     public static final String MAIN_USER = "MainUser";
@@ -56,6 +61,8 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
 
     private TextView followeeCount;
     private TextView followerCount;
+
+    private Button followBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +92,14 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
         followerCount = findViewById(R.id.userPgFollowerCount);
 
         FollowNumberTask followNumberTask = new FollowNumberTask(presenter, UserActivity.this);
-        FollowNumberRequest request = new FollowNumberRequest(clickedUser);
-        followNumberTask.execute(request);
+        FollowNumberRequest followNumberRequest = new FollowNumberRequest(clickedUser);
+        followNumberTask.execute(followNumberRequest);
 
-        Button followBtn = findViewById(R.id.userPgFollowButton);
+        IsFollowingTask isFollowingTask = new IsFollowingTask(presenter, UserActivity.this);
+        IsFollowingRequest isFollowingRequest = new IsFollowingRequest(mainUser, clickedUser);
+        isFollowingTask.execute(isFollowingRequest);
+
+        followBtn = findViewById(R.id.userPgFollowButton);
         followBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,4 +293,40 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
         Toast.makeText(UserActivity.this, "Failed to unfollow because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void isFollowingSuccessful(IsFollowingResponse isFollowingResponse) {
+        if (isFollowingResponse.isFollowing()){
+            followBtn.setText(FOLLOWING_STRING);
+            followBtn.setBackgroundColor(Color.WHITE);
+            followBtn.setTextColor(Color.BLACK);
+        } else {
+            followBtn.setText(FOLLOW_STRING);
+            followBtn.setBackgroundColor(Color.parseColor("#0000FF"));
+            followBtn.setTextColor(Color.WHITE);
+        }
+    }
+
+    @Override
+    public void isFollowingUnsuccessful(IsFollowingResponse isFollowingResponse) {
+        Toast.makeText(UserActivity.this, "Failed to check if user is following. " + isFollowingResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleIsFollowingException(Exception ex) {
+        Log.e(LOG_TAG_ISFOLLOWING, ex.getMessage(), ex);
+
+        if(ex instanceof TweeterRemoteException) {
+            TweeterRemoteException remoteException = (TweeterRemoteException) ex;
+            Log.e(LOG_TAG_ISFOLLOWING, "Remote Exception Type: " + remoteException.getRemoteExceptionType());
+
+            Log.e(LOG_TAG_ISFOLLOWING, "Remote Stack Trace:");
+            if(remoteException.getRemoteStackTrace() != null) {
+                for(String stackTraceLine : remoteException.getRemoteStackTrace()) {
+                    Log.e(LOG_TAG_ISFOLLOWING, "\t\t" + stackTraceLine);
+                }
+            }
+        }
+
+        Toast.makeText(UserActivity.this, "Failed to check if user is following because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+    }
 }

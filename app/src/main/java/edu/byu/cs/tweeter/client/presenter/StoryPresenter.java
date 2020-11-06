@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.client.model.service.StoryServiceProxy;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.StoryService;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
@@ -21,11 +22,11 @@ public class StoryPresenter {
     public StoryResponse getStory(StoryRequest request)
             throws IOException, TweeterRemoteException
     {
-        StoryServiceProxy storyService = getStoryService();
+        StoryService storyService = getStoryService();
         return storyService.getStory(request);
     }
 
-    StoryServiceProxy getStoryService() {
+    StoryService getStoryService() {
         return new StoryServiceProxy();
     }
 }

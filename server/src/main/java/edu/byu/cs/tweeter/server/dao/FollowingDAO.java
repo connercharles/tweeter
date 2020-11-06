@@ -9,11 +9,13 @@ import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.IsFollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.IsFollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 
 /**
@@ -53,7 +55,6 @@ public class FollowingDAO {
      * @return said count.
      */
     public Integer getFolloweeCount(User follower) {
-        // TODO: uses the dummy data.  Replace with a real implementation.
         assert follower != null;
         return getDummyUsers().size();
     }
@@ -69,7 +70,6 @@ public class FollowingDAO {
      * @return the followees.
      */
     public FollowingResponse getFollowees(FollowingRequest request) {
-        // TODO: Generates dummy data. Replace with a real implementation.
         assert request.getLimit() > 0;
         assert request.getFollower() != null;
 
@@ -123,6 +123,10 @@ public class FollowingDAO {
 
     public UnfollowResponse unfollow(UnfollowRequest unfollowRequest){
         return new UnfollowResponse();
+    }
+
+    public IsFollowingResponse isFollowing(IsFollowingRequest request) {
+        return new IsFollowingResponse(false);
     }
 
     public FollowNumberResponse getFollowNumbers(FollowNumberRequest followNumberRequest){

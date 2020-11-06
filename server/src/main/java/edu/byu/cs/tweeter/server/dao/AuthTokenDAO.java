@@ -6,6 +6,7 @@ import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 
 public class AuthTokenDAO {
 
+    // TODO might need to throw errors in here?? for Bad Request
     public LogoutResponse logout(LogoutRequest request) {
         return new LogoutResponse();
     }

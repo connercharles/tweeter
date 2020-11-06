@@ -10,7 +10,9 @@ import edu.byu.cs.tweeter.server.service.FollowNumberServiceImpl;
 public class GetFollowNumberHandler implements RequestHandler<FollowNumberRequest, FollowNumberResponse> {
     @Override
     public FollowNumberResponse handleRequest(FollowNumberRequest followNumberRequest, Context context) {
-        FollowNumberServiceImpl service = new FollowNumberServiceImpl();
-        return service.getFollowNumbers(followNumberRequest);
+        return getService().getFollowNumbers(followNumberRequest);
     }
+
+    public FollowNumberServiceImpl getService() { return new FollowNumberServiceImpl(); }
+
 }

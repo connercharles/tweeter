@@ -8,6 +8,7 @@ import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.IsFollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
@@ -19,6 +20,7 @@ import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.IsFollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
@@ -32,8 +34,6 @@ import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
  */
 public class ServerFacade {
 
-    // TODO: Set this to the invoke URL of your API. Find it by going to your API in AWS, clicking
-    //  on stages in the right-side menu, and clicking on the stage you deployed your API to.
     private static final String SERVER_URL = " https://c0zi1lm65j.execute-api.us-west-2.amazonaws.com/prod";
 
     private final ClientCommunicator clientCommunicator = new ClientCommunicator(SERVER_URL);
@@ -156,7 +156,19 @@ public class ServerFacade {
             return response;
         } else {
             throw new RuntimeException(response.getMessage());
-        }    }
+        }
+    }
+
+    public IsFollowingResponse isFollowing(IsFollowingRequest request, String urlPath)
+            throws IOException, TweeterRemoteException {
+        IsFollowingResponse response = clientCommunicator.doPost(urlPath, request, null, IsFollowingResponse.class);
+
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
+    }
 
     public PostResponse postStatus(PostRequest request, String urlPath)
             throws IOException, TweeterRemoteException {
@@ -166,5 +178,6 @@ public class ServerFacade {
             return response;
         } else {
             throw new RuntimeException(response.getMessage());
-        }    }
+        }
+    }
 }

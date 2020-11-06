@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
         Toast.makeText(MainActivity.this, "Failed to logout because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
     }
-    // TODO handle tweeter exceptions like Login **************************************
 
     @Override
     public void followNumberSuccessful(FollowNumberResponse followNumberResponse) {

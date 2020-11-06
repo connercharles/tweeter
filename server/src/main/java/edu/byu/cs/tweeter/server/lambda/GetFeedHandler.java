@@ -10,7 +10,9 @@ import edu.byu.cs.tweeter.server.service.FeedServiceImpl;
 public class GetFeedHandler implements RequestHandler<FeedRequest, FeedResponse> {
     @Override
     public FeedResponse handleRequest(FeedRequest feedRequest, Context context) {
-        FeedServiceImpl service = new FeedServiceImpl();
-        return service.getFeed(feedRequest);
+        return getService().getFeed(feedRequest);
     }
+
+    public FeedServiceImpl getService() { return new FeedServiceImpl(); }
+
 }

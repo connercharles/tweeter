@@ -15,7 +15,7 @@ import edu.byu.cs.tweeter.model.service.LoginService;
  */
 public class LoginServiceProxy implements LoginService {
 
-    private static final String URL_PATH = "/login";
+    static final String URL_PATH = "/login";
 
     public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException {
         ServerFacade serverFacade = getServerFacade();

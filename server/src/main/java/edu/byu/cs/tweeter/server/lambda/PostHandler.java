@@ -10,7 +10,8 @@ import edu.byu.cs.tweeter.server.service.PostServiceImpl;
 public class PostHandler implements RequestHandler<PostRequest, PostResponse> {
     @Override
     public PostResponse handleRequest(PostRequest postRequest, Context context) {
-        PostServiceImpl service = new PostServiceImpl();
-        return service.postStatus(postRequest);
+        return getService().postStatus(postRequest);
     }
+    public PostServiceImpl getService() { return new PostServiceImpl(); }
+
 }

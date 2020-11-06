@@ -10,7 +10,9 @@ import edu.byu.cs.tweeter.server.service.LogoutServiceImpl;
 public class LogoutHandler implements RequestHandler<LogoutRequest, LogoutResponse> {
     @Override
     public LogoutResponse handleRequest(LogoutRequest logoutRequest, Context context) {
-        LogoutServiceImpl service = new LogoutServiceImpl();
-        return service.logout(logoutRequest);
+        return getService().logout(logoutRequest);
     }
+
+    public LogoutServiceImpl getService() { return new LogoutServiceImpl(); }
+
 }

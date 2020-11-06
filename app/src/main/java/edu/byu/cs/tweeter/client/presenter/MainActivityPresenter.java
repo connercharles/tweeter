@@ -5,6 +5,8 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.client.model.service.FollowNumberServiceProxy;
 import edu.byu.cs.tweeter.client.model.service.LogoutServiceProxy;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.FollowNumberService;
+import edu.byu.cs.tweeter.model.service.LogoutService;
 import edu.byu.cs.tweeter.model.service.request.FollowNumberRequest;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowNumberResponse;
@@ -24,17 +26,17 @@ public class MainActivityPresenter {
     public LogoutResponse logout(LogoutRequest logoutRequest)
             throws IOException, TweeterRemoteException
     {
-        LogoutServiceProxy logoutService = getLogoutService();
+        LogoutService logoutService = getLogoutService();
         return logoutService.logout(logoutRequest);
     }
 
     public FollowNumberResponse getFollowNumbers(FollowNumberRequest followNumberRequest)
             throws IOException, TweeterRemoteException
     {
-        FollowNumberServiceProxy followNumberService = getFollowNumberService();
+        FollowNumberService followNumberService = getFollowNumberService();
         return followNumberService.getFollowNumbers(followNumberRequest);
     }
 
-    LogoutServiceProxy getLogoutService() { return new LogoutServiceProxy(); }
-    FollowNumberServiceProxy getFollowNumberService() { return new FollowNumberServiceProxy(); }
+    LogoutService getLogoutService() { return new LogoutServiceProxy(); }
+    FollowNumberService getFollowNumberService() { return new FollowNumberServiceProxy(); }
 }

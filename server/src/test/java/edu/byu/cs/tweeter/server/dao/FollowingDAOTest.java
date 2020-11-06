@@ -34,7 +34,7 @@ class FollowingDAOTest {
     @Test
     void testGetFollowees_noFolloweesForUser() {
         List<User> followees = Collections.emptyList();
-        Mockito.when(followingDAOSpy.getDummyFollowees()).thenReturn(followees);
+        Mockito.when(followingDAOSpy.getDummyUsers()).thenReturn(followees);
 
         FollowingRequest request = new FollowingRequest(user1, 10, null);
         FollowingResponse response = followingDAOSpy.getFollowees(request);
@@ -46,7 +46,7 @@ class FollowingDAOTest {
     @Test
     void testGetFollowees_oneFollowerForUser_limitGreaterThanUsers() {
         List<User> followees = Collections.singletonList(user2);
-        Mockito.when(followingDAOSpy.getDummyFollowees()).thenReturn(followees);
+        Mockito.when(followingDAOSpy.getDummyUsers()).thenReturn(followees);
 
         FollowingRequest request = new FollowingRequest(user1, 10, null);
         FollowingResponse response = followingDAOSpy.getFollowees(request);
@@ -59,7 +59,7 @@ class FollowingDAOTest {
     @Test
     void testGetFollowees_twoFollowersForUser_limitEqualsUsers() {
         List<User> followees = Arrays.asList(user2, user3);
-        Mockito.when(followingDAOSpy.getDummyFollowees()).thenReturn(followees);
+        Mockito.when(followingDAOSpy.getDummyUsers()).thenReturn(followees);
 
         FollowingRequest request = new FollowingRequest(user3, 2, null);
         FollowingResponse response = followingDAOSpy.getFollowees(request);
@@ -73,7 +73,7 @@ class FollowingDAOTest {
     @Test
     void testGetFollowees_limitLessThanUsers_endsOnPageBoundary() {
         List<User> followees = Arrays.asList(user2, user3, user4, user5, user6, user7);
-        Mockito.when(followingDAOSpy.getDummyFollowees()).thenReturn(followees);
+        Mockito.when(followingDAOSpy.getDummyUsers()).thenReturn(followees);
 
         FollowingRequest request = new FollowingRequest(user5, 2, null);
         FollowingResponse response = followingDAOSpy.getFollowees(request);
@@ -107,7 +107,7 @@ class FollowingDAOTest {
     @Test
     void testGetFollowees_limitLessThanUsers_notEndsOnPageBoundary() {
         List<User> followees = Arrays.asList(user2, user3, user4, user5, user6, user7, user8);
-        Mockito.when(followingDAOSpy.getDummyFollowees()).thenReturn(followees);
+        Mockito.when(followingDAOSpy.getDummyUsers()).thenReturn(followees);
 
         FollowingRequest request = new FollowingRequest(user6, 2, null);
         FollowingResponse response = followingDAOSpy.getFollowees(request);

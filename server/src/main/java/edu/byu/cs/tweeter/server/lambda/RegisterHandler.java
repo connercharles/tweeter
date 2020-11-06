@@ -10,7 +10,9 @@ import edu.byu.cs.tweeter.server.service.RegisterServiceImpl;
 public class RegisterHandler implements RequestHandler<RegisterRequest, RegisterResponse> {
     @Override
     public RegisterResponse handleRequest(RegisterRequest registerRequest, Context context) {
-        RegisterServiceImpl service = new RegisterServiceImpl();
-        return service.register(registerRequest);
+        return getService().register(registerRequest);
     }
+
+    public RegisterServiceImpl getService() { return new RegisterServiceImpl(); }
+
 }

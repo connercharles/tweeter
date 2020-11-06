@@ -9,9 +9,8 @@ import edu.byu.cs.tweeter.server.dao.UserDAO;
 public class RegisterServiceImpl implements RegisterService {
 
     public RegisterResponse register(RegisterRequest request) {
-        return new RegisterResponse(getUserDAO().register(request), getAuthTokenDAO().getAuthToken());
+        return getUserDAO().register(request);
     }
 
     UserDAO getUserDAO() { return new UserDAO(); }
-    AuthTokenDAO getAuthTokenDAO() { return new AuthTokenDAO(); }
 }

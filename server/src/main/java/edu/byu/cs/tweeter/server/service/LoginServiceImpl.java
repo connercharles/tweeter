@@ -10,9 +10,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        return new LoginResponse(getUserDAO().login(request), getAuthTokenDAO().getAuthToken());
+        return getUserDAO().login(request);
     }
 
     UserDAO getUserDAO() { return new UserDAO(); }
-    AuthTokenDAO getAuthTokenDAO() { return new AuthTokenDAO(); }
 }
