@@ -11,6 +11,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 
 public class FollowServiceImplTest {
@@ -29,16 +30,25 @@ public class FollowServiceImplTest {
         request = new FollowRequest(user1, user2);
 
         expectedResponse = new FollowResponse();
+    }
+
+    @Test
+    public void testFollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
         Mockito.when(mockFollowingDAO.follow(request)).thenReturn(expectedResponse);
 
         followServiceImplSpy = Mockito.spy(FollowServiceImpl.class);
         Mockito.when(followServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+
+        FollowResponse response = followServiceImplSpy.follow(request);
+        Assertions.assertEquals(expectedResponse, response);
     }
 
     @Test
-    public void testFollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testFollow_validData() throws IOException, TweeterRemoteException {
+        followServiceImplSpy = new FollowServiceImpl();
+
         FollowResponse response = followServiceImplSpy.follow(request);
-        Assertions.assertEquals(expectedResponse, response);
+        Assertions.assertTrue(response.isSuccess());
     }
 }

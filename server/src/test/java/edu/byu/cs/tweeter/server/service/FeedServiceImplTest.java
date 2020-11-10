@@ -33,16 +33,27 @@ public class FeedServiceImplTest {
         request = new FeedRequest(resultUser, 3, null);
 
         expectedResponse = new FeedResponse(Arrays.asList(status1, status2, status3), false);
+    }
+
+    @Test
+    public void testGetFeed_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockStatusDAO = Mockito.mock(StatusDAO.class);
         Mockito.when(mockStatusDAO.getFeed(request)).thenReturn(expectedResponse);
 
         feedServiceImplSpy = Mockito.spy(FeedServiceImpl.class);
         Mockito.when(feedServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+
+        FeedResponse response = feedServiceImplSpy.getFeed(request);
+        Assertions.assertEquals(expectedResponse, response);
     }
 
     @Test
-    public void testGetFeed_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testGetFeed_validData() throws IOException, TweeterRemoteException {
+        feedServiceImplSpy = new FeedServiceImpl();
+
         FeedResponse response = feedServiceImplSpy.getFeed(request);
-        Assertions.assertEquals(expectedResponse, response);
+
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertNotNull(response.getFeed());
     }
 }

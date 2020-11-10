@@ -37,11 +37,6 @@ public class FollowingServiceImplTest {
 
         // Setup a mock FollowingDAO that will return known responses
         expectedResponse = new FollowingResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.getFollowees(request)).thenReturn(expectedResponse);
-
-        followingServiceImplSpy = Mockito.spy(FollowingServiceImpl.class);
-        Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
     }
 
     /**
@@ -50,7 +45,22 @@ public class FollowingServiceImplTest {
      */
     @Test
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
+        Mockito.when(mockFollowingDAO.getFollowees(request)).thenReturn(expectedResponse);
+
+        followingServiceImplSpy = Mockito.spy(FollowingServiceImpl.class);
+        Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+
         FollowingResponse response = followingServiceImplSpy.getFollowees(request);
         Assertions.assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    public void testGetFollowees_validData() throws IOException, TweeterRemoteException {
+        followingServiceImplSpy = new FollowingServiceImpl();
+
+        FollowingResponse response = followingServiceImplSpy.getFollowees(request);
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertNotNull(response.getFollowees());
     }
 }

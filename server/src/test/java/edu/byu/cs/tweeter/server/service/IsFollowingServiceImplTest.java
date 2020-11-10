@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.IsFollowingService;
 import edu.byu.cs.tweeter.model.service.request.IsFollowingRequest;
 import edu.byu.cs.tweeter.model.service.response.IsFollowingResponse;
 import edu.byu.cs.tweeter.server.dao.FollowingDAO;
@@ -22,7 +23,6 @@ public class IsFollowingServiceImplTest {
 
     @BeforeEach
     public void setup() {
-
         User user1 = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
         User user2 = new User("FirstName2", "LastName2",
@@ -30,6 +30,10 @@ public class IsFollowingServiceImplTest {
 
         // Setup a request object to use in the tests
         request = new IsFollowingRequest(user1, user2);
+    }
+
+    @Test
+    public void testIsFollowingFalse_validRequest_correctResponse() throws IOException, TweeterRemoteException {
 
         // Setup a mock FollowingDAO that will return known responses
         expectedResponse = new IsFollowingResponse(false);
@@ -38,20 +42,19 @@ public class IsFollowingServiceImplTest {
 
         isFollowingServiceImpl = Mockito.spy(IsFollowingServiceImpl.class);
         Mockito.when(isFollowingServiceImpl.getFollowingDAO()).thenReturn(mockFollowingDAO);
-    }
 
-    @Test
-    public void testIsFollowingFalse_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         IsFollowingResponse response = isFollowingServiceImpl.isFollowing(request);
         Assertions.assertEquals(expectedResponse, response);
     }
 
+
     @Test
-    public void testIsFollowingTrue_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        expectedResponse = new IsFollowingResponse(true);
-        Mockito.when(mockFollowingDAO.isFollowing(request)).thenReturn(expectedResponse);
+    public void testIsFollowing_validData() throws IOException, TweeterRemoteException {
+        isFollowingServiceImpl = new IsFollowingServiceImpl();
 
         IsFollowingResponse response = isFollowingServiceImpl.isFollowing(request);
-        Assertions.assertEquals(expectedResponse, response);
+
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertNotNull(response.isFollowing());
     }
 }

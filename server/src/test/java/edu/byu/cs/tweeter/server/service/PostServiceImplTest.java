@@ -28,18 +28,26 @@ public class PostServiceImplTest {
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
         AuthToken authToken = new AuthToken();
         request = new PostRequest(authToken, author, message);
+    }
 
+    @Test
+    public void testPost_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         expectedResponse = new PostResponse();
         mockStatusDAO = Mockito.mock(StatusDAO.class);
         Mockito.when(mockStatusDAO.postStatus(request)).thenReturn(expectedResponse);
 
         postServiceImplSpy = Mockito.spy(PostServiceImpl.class);
         Mockito.when(postServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+
+        PostResponse response = postServiceImplSpy.postStatus(request);
+        Assertions.assertEquals(expectedResponse, response);
     }
 
     @Test
-    public void testPost_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testPost_validData() throws IOException, TweeterRemoteException {
+        postServiceImplSpy = new PostServiceImpl();
+
         PostResponse response = postServiceImplSpy.postStatus(request);
-        Assertions.assertEquals(expectedResponse, response);
+        Assertions.assertTrue(response.isSuccess());
     }
 }

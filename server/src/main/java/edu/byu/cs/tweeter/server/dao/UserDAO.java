@@ -23,4 +23,13 @@ public class UserDAO {
         return new RegisterResponse(user, authToken);
     }
 
+    public boolean isValidUser(User user) {
+        return true;
+//        try{
+//            return true;
+//        } catch (Exception ex){
+//            throw new RuntimeException("Server Error", ex);
+//        }
+    }
+
 }

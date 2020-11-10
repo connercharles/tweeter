@@ -17,7 +17,7 @@ public class UnfollowServiceImplTest {
     private UnfollowRequest request;
     private UnfollowResponse expectedResponse;
     private FollowingDAO mockFollowingDAO;
-    private UnfollowServiceImpl followServiceImplSpy;
+    private UnfollowServiceImpl unfollowServiceImplSpy;
 
     @BeforeEach
     public void setup() {
@@ -27,18 +27,26 @@ public class UnfollowServiceImplTest {
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
         request = new UnfollowRequest(user1, user2);
-
-        expectedResponse = new UnfollowResponse();
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.unfollow(request)).thenReturn(expectedResponse);
-
-        followServiceImplSpy = Mockito.spy(UnfollowServiceImpl.class);
-        Mockito.when(followServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
     }
 
     @Test
     public void testUnfollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        UnfollowResponse response = followServiceImplSpy.unfollow(request);
+        expectedResponse = new UnfollowResponse();
+        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
+        Mockito.when(mockFollowingDAO.unfollow(request)).thenReturn(expectedResponse);
+
+        unfollowServiceImplSpy = Mockito.spy(UnfollowServiceImpl.class);
+        Mockito.when(unfollowServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+
+        UnfollowResponse response = unfollowServiceImplSpy.unfollow(request);
         Assertions.assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    public void testUnfollow_validData() throws IOException, TweeterRemoteException {
+        unfollowServiceImplSpy = new UnfollowServiceImpl();
+
+        UnfollowResponse response = unfollowServiceImplSpy.unfollow(request);
+        Assertions.assertTrue(response.isSuccess());
     }
 }

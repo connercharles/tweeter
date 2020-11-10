@@ -8,7 +8,6 @@ import edu.byu.cs.tweeter.server.dao.StatusDAO;
 public class PostServiceImpl implements PostService {
 
     public PostResponse postStatus(PostRequest postRequest){
-        // TODO validate/throw error when needed
         return getStatusDAO().postStatus(postRequest);
     }
 

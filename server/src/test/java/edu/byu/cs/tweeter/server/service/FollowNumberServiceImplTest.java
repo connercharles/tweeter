@@ -27,16 +27,27 @@ public class FollowNumberServiceImplTest {
         request = new FollowNumberRequest(user);
 
         expectedResponse = new FollowNumberResponse(7, 5);
+    }
+
+    @Test
+    public void testGetFollowNumber_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
         Mockito.when(mockFollowingDAO.getFollowNumbers(request)).thenReturn(expectedResponse);
 
         followNumberServiceImplSpy = Mockito.spy(FollowNumberServiceImpl.class);
         Mockito.when(followNumberServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
-    }
 
-    @Test
-    public void testGetFollowNumber_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         FollowNumberResponse response = followNumberServiceImplSpy.getFollowNumbers(request);
         Assertions.assertEquals(expectedResponse, response);
     }
+
+    @Test
+    public void testGetFollowNumber_validData() throws IOException, TweeterRemoteException {
+        followNumberServiceImplSpy = new FollowNumberServiceImpl();
+
+        FollowNumberResponse response = followNumberServiceImplSpy.getFollowNumbers(request);
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertNotNull(response.getFollowerNumber());
+    }
+
 }

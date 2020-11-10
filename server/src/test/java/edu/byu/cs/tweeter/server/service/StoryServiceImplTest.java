@@ -31,18 +31,27 @@ public class StoryServiceImplTest {
         Status status3 = new Status("test3", resultUser);
 
         request = new StoryRequest(resultUser, 3, null);
-
         expectedResponse = new StoryResponse(Arrays.asList(status1, status2, status3), false);
+    }
+
+    @Test
+    public void testGetStory_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockStatusDAO = Mockito.mock(StatusDAO.class);
         Mockito.when(mockStatusDAO.getStory(request)).thenReturn(expectedResponse);
 
         storyServiceImplSpy = Mockito.spy(StoryServiceImpl.class);
         Mockito.when(storyServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+
+        StoryResponse response = storyServiceImplSpy.getStory(request);
+        Assertions.assertEquals(expectedResponse, response);
     }
 
     @Test
-    public void testGetStory_validRequest_correctResponse() throws IOException, TweeterRemoteException {
+    public void testStory_validData() throws IOException, TweeterRemoteException {
+        storyServiceImplSpy = new StoryServiceImpl();
+
         StoryResponse response = storyServiceImplSpy.getStory(request);
-        Assertions.assertEquals(expectedResponse, response);
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertNotNull(response.getStory());
     }
 }

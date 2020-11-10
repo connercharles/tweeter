@@ -20,8 +20,8 @@ public class RegisterServiceImplTest {
     private UserDAO mockUserDAO;
     private RegisterServiceImpl registerServiceImplSpy;
 
-    @BeforeEach
-    public void setup() {
+    @Test
+    public void testRegister_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         User user = new User("Ben", "Dover",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
@@ -33,11 +33,26 @@ public class RegisterServiceImplTest {
 
         registerServiceImplSpy = Mockito.spy(RegisterServiceImpl.class);
         Mockito.when(registerServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
-    }
 
-    @Test
-    public void testRegister_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         RegisterResponse response = registerServiceImplSpy.register(request);
         Assertions.assertEquals(expectedResponse, response);
     }
+
+    @Test
+    public void testRegister_validData() throws IOException, TweeterRemoteException {
+        User user = new User("Ben", "Dover",
+                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+
+        request = new RegisterRequest("Ben", "Dover", "test", "password", null);
+
+        expectedResponse = new RegisterResponse(user, new AuthToken());
+        registerServiceImplSpy = new RegisterServiceImpl();
+
+        RegisterResponse response = registerServiceImplSpy.register(request);
+        Assertions.assertTrue(response.isSuccess());
+        Assertions.assertEquals(expectedResponse.getUser(), response.getUser());
+        Assertions.assertNotNull(response.getAuthToken());
+    }
+
+
 }
