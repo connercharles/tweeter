@@ -6,16 +6,24 @@ public class RegisterRequest {
     private String lastname;
     private String username;
     private String password;
-    private byte [] imageBytes;
+    private String imageEncoded;
 
     private RegisterRequest() {}
 
-    public RegisterRequest(String firstname, String lastname, String username, String password, byte [] imageBytes) {
+    public RegisterRequest(String firstname, String lastname, String username, String password, String imageEncoded) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
         this.password = password;
-        this.imageBytes = imageBytes;
+        this.imageEncoded = imageEncoded;
+    }
+
+    public String getImageEncoded() {
+        return imageEncoded;
+    }
+
+    public void setImageEncoded(String imageEncoded) {
+        this.imageEncoded = imageEncoded;
     }
 
     public String getFirstname() {
@@ -34,10 +42,6 @@ public class RegisterRequest {
         return password;
     }
 
-    public byte[] getImageBytes() {
-        return imageBytes;
-    }
-
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
@@ -54,7 +58,4 @@ public class RegisterRequest {
         this.password = password;
     }
 
-    public void setImageBytes(byte[] imageBytes) {
-        this.imageBytes = imageBytes;
-    }
 }

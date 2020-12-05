@@ -38,10 +38,10 @@ public class FeedServiceImplTest {
     @Test
     public void testGetFeed_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockStatusDAO = Mockito.mock(StatusDAO.class);
-        Mockito.when(mockStatusDAO.getFeed(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockStatusDAO.getFeed(request)).thenReturn(expectedResponse);
 
         feedServiceImplSpy = Mockito.spy(FeedServiceImpl.class);
-        Mockito.when(feedServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+//        Mockito.when(feedServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
 
         FeedResponse response = feedServiceImplSpy.getFeed(request);
         Assertions.assertEquals(expectedResponse, response);

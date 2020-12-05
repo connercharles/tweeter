@@ -38,7 +38,7 @@ public class IsFollowingServiceImplTest {
         // Setup a mock FollowingDAO that will return known responses
         expectedResponse = new IsFollowingResponse(false);
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.isFollowing(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockFollowingDAO.isFollowing(request)).thenReturn(expectedResponse);
 
         isFollowingServiceImpl = Mockito.spy(IsFollowingServiceImpl.class);
         Mockito.when(isFollowingServiceImpl.getFollowingDAO()).thenReturn(mockFollowingDAO);

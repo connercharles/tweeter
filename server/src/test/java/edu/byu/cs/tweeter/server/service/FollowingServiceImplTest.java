@@ -46,7 +46,7 @@ public class FollowingServiceImplTest {
     @Test
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.getFollowees(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockFollowingDAO.getFollowees(request)).thenReturn(expectedResponse);
 
         followingServiceImplSpy = Mockito.spy(FollowingServiceImpl.class);
         Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);

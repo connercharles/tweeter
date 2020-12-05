@@ -27,7 +27,7 @@ public class FollowServiceImplTest {
         User user2 = new User("FirstName2", "LastName2",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
-        request = new FollowRequest(user1, user2);
+//        request = new FollowRequest(user1, user2);
 
         expectedResponse = new FollowResponse();
     }
@@ -35,7 +35,7 @@ public class FollowServiceImplTest {
     @Test
     public void testFollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.follow(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockFollowingDAO.follow(request)).thenReturn(expectedResponse);
 
         followServiceImplSpy = Mockito.spy(FollowServiceImpl.class);
         Mockito.when(followServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);

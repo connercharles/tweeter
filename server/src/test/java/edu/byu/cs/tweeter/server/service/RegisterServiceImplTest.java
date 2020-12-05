@@ -27,9 +27,9 @@ public class RegisterServiceImplTest {
 
         request = new RegisterRequest("Ben", "Dover", "test", "password", null);
 
-        expectedResponse = new RegisterResponse(user, new AuthToken());
+//        expectedResponse = new RegisterResponse(user, new AuthToken());
         mockUserDAO = Mockito.mock(UserDAO.class);
-        Mockito.when(mockUserDAO.register(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockUserDAO.register(request)).thenReturn(expectedResponse);
 
         registerServiceImplSpy = Mockito.spy(RegisterServiceImpl.class);
         Mockito.when(registerServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
@@ -45,7 +45,7 @@ public class RegisterServiceImplTest {
 
         request = new RegisterRequest("Ben", "Dover", "test", "password", null);
 
-        expectedResponse = new RegisterResponse(user, new AuthToken());
+//        expectedResponse = new RegisterResponse(user, new AuthToken());
         registerServiceImplSpy = new RegisterServiceImpl();
 
         RegisterResponse response = registerServiceImplSpy.register(request);

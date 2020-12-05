@@ -5,11 +5,14 @@ import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 
-public class FollowServiceImpl implements FollowService {
+public class FollowServiceImpl extends RequestChecker implements FollowService {
 
     @Override
     public FollowResponse follow(FollowRequest request) {
-        return getFollowingDAO().follow(request);
+        checkAuth(request.getAuth().getToken());
+
+        getFollowingDAO().put(request.getUser().getAlias(), request.getFollows().getAlias());
+        return new FollowResponse();
     }
 
     FollowingDAO getFollowingDAO() {

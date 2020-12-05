@@ -26,14 +26,14 @@ public class UnfollowServiceImplTest {
         User user2 = new User("FirstName2", "LastName2",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
-        request = new UnfollowRequest(user1, user2);
+//        request = new UnfollowRequest(user1, user2);
     }
 
     @Test
     public void testUnfollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         expectedResponse = new UnfollowResponse();
         mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowingDAO.unfollow(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockFollowingDAO.unfollow(request)).thenReturn(expectedResponse);
 
         unfollowServiceImplSpy = Mockito.spy(UnfollowServiceImpl.class);
         Mockito.when(unfollowServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);

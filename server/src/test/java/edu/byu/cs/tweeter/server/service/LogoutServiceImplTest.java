@@ -22,7 +22,7 @@ public class LogoutServiceImplTest {
 
     @BeforeEach
     public void setup() {
-        request = new LogoutRequest(new AuthToken());
+//        request = new LogoutRequest(new AuthToken());
     }
 
     @Test
@@ -32,7 +32,7 @@ public class LogoutServiceImplTest {
         Mockito.when(mockAuthTokenDAO.logout(request)).thenReturn(expectedResponse);
 
         logoutServiceImplSpy = Mockito.spy(LogoutServiceImpl.class);
-        Mockito.when(logoutServiceImplSpy.getAuthTokenDAO()).thenReturn(mockAuthTokenDAO);
+//        Mockito.when(logoutServiceImplSpy.getAuthTokenDAO()).thenReturn(mockAuthTokenDAO);
 
         LogoutResponse response = logoutServiceImplSpy.logout(request);
         Assertions.assertEquals(expectedResponse, response);

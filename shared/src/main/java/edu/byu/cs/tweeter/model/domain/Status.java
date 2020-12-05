@@ -18,6 +18,12 @@ public class Status implements Comparable<Status> {
         this.whenPosted = Calendar.getInstance().getTimeInMillis();
     }
 
+    public Status(String message, User author, long time){
+        this.message = message;
+        this.author = author;
+        this.whenPosted = time;
+    }
+
     public String getMessage() {
         return message;
     }

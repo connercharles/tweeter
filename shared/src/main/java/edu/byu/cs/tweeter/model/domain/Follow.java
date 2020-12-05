@@ -7,19 +7,20 @@ import java.util.Objects;
  */
 public class Follow {
 
-    private final User follower;
-    private final User followee;
+    // TODO: CHANGED FROM USER TO STRINGS!!!
+    private final String follower;
+    private final String followee;
 
-    public Follow( User follower, User followee) {
+    public Follow(String follower, String followee) {
         this.follower = follower;
         this.followee = followee;
     }
 
-    public User getFollower() {
+    public String getFollower() {
         return follower;
     }
 
-    public User getFollowee() {
+    public String getFollowee() {
         return followee;
     }
 
@@ -40,8 +41,8 @@ public class Follow {
     @Override
     public String toString() {
         return "Follow{" +
-                "follower=" + follower.getAlias() +
-                ", followee=" + followee.getAlias() +
+                "follower=" + follower +
+                ", followee=" + followee +
                 '}';
     }
 }

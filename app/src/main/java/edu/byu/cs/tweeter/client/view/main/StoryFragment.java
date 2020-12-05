@@ -123,6 +123,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View{
                     LocalDateTime.ofInstant(Instant.ofEpochMilli(status.getWhenPosted()),
                             TimeZone.getDefault().toZoneId());
             postTime.setText(whenPostedDateTime.format(postFormatter));
+            statusMessage.setText(status.getMessage());
             parseMessage(status);
         }
 

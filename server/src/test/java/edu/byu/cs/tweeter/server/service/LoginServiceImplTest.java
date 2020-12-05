@@ -30,7 +30,7 @@ public class LoginServiceImplTest {
 
         expectedResponse = new LoginResponse(user, null);
         mockUserDAO = Mockito.mock(UserDAO.class);
-        Mockito.when(mockUserDAO.login(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockUserDAO.login(request)).thenReturn(expectedResponse);
 
         loginServiceImplSpy = Mockito.spy(LoginServiceImpl.class);
         Mockito.when(loginServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
@@ -43,8 +43,8 @@ public class LoginServiceImplTest {
     public void testLogin_validData() throws IOException, TweeterRemoteException {
         User user = new User("Ben", "Dover",
                 "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg");
-        AuthToken authToken = new AuthToken();
-        LoginResponse expectedResponse = new LoginResponse(user, authToken);
+//        AuthToken authToken = new AuthToken();
+//        LoginResponse expectedResponse = new LoginResponse(user, authToken);
 
         loginServiceImplSpy = new LoginServiceImpl();
         request = new LoginRequest("BenDover", "password");

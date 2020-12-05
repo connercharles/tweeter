@@ -123,6 +123,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
                     LocalDateTime.ofInstant(Instant.ofEpochMilli(status.getWhenPosted()),
                             TimeZone.getDefault().toZoneId());
             postTime.setText(whenPostedDateTime.format(postFormatter));
+            statusMessage.setText(status.getMessage());
             parseMessage(status);
         }
 

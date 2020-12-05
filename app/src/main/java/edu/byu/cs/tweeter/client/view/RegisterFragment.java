@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
@@ -43,6 +44,7 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
     String username;
     String password;
     byte [] imageBytes;
+    String imageEncoded;
 
     private RegisterPresenter presenter;
 
@@ -62,7 +64,7 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
                     registerInToast = Toast.makeText(getContext(), "Registered, Logging In", Toast.LENGTH_LONG);
                     registerInToast.show();
 
-                    RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, username, password, imageBytes);
+                    RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, username, password, imageEncoded);
                     RegisterTask registerTask = new RegisterTask(presenter, RegisterFragment.this);
                     registerTask.execute(registerRequest);
 
@@ -95,7 +97,9 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
             imageBytes = stream.toByteArray();
-            photo.recycle();
+            imageEncoded = Base64.getEncoder().encodeToString(imageBytes);
+
+//            photo.recycle();
 //            imageBytes = (byte[])data.getExtras().get("data");
         }
     }

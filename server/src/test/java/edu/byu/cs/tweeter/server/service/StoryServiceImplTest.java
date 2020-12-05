@@ -37,7 +37,7 @@ public class StoryServiceImplTest {
     @Test
     public void testGetStory_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         mockStatusDAO = Mockito.mock(StatusDAO.class);
-        Mockito.when(mockStatusDAO.getStory(request)).thenReturn(expectedResponse);
+//        Mockito.when(mockStatusDAO.getStory(request)).thenReturn(expectedResponse);
 
         storyServiceImplSpy = Mockito.spy(StoryServiceImpl.class);
         Mockito.when(storyServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);

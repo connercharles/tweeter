@@ -9,7 +9,8 @@ public class IsFollowingServiceImpl implements IsFollowingService {
 
     @Override
     public IsFollowingResponse isFollowing(IsFollowingRequest request) {
-        return getFollowingDAO().isFollowing(request);
+        boolean isFollowing = getFollowingDAO().isFollowing(request.getUser().getAlias(), request.getFollows().getAlias());
+        return new IsFollowingResponse(isFollowing);
     }
 
     FollowingDAO getFollowingDAO() {

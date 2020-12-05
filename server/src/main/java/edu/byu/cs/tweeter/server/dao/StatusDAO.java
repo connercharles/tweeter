@@ -1,158 +1,145 @@
 package edu.byu.cs.tweeter.server.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.google.gson.Gson;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FeedRequest;
-import edu.byu.cs.tweeter.model.service.request.PostRequest;
-import edu.byu.cs.tweeter.model.service.request.StoryRequest;
-import edu.byu.cs.tweeter.model.service.response.FeedResponse;
-import edu.byu.cs.tweeter.model.service.response.PostResponse;
-import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
 public class StatusDAO {
-    private static final String MALE_IMAGE_URL = "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg";
-    private static final String FEMALE_IMAGE_URL = "https://admin.itsnicethat.com/images/8dKc6Jf49NsPRj0RJaKrFUOlcYI=/31529/format-webp%7Cwidth-2880/50895e095c3e3c550a0049ff.jpg";
+    private static String TABLE_NAME = "status";
+    private static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("us-west-2").build();
+    private static DynamoDB dynamoDB = new DynamoDB(client);
+    private final static String POST_QUEUE_URL = "https://sqs.us-west-2.amazonaws.com/345693661661/PostQueue";
 
-    private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
-    private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
-    private final User user3 = new User("Bob", "Bobson", MALE_IMAGE_URL);
-    private final User user4 = new User("Bonnie", "Beatty", FEMALE_IMAGE_URL);
-    private final User user5 = new User("Chris", "Colston", MALE_IMAGE_URL);
-    private final User user6 = new User("Cindy", "Coats", FEMALE_IMAGE_URL);
-    private final User user7 = new User("Dan", "Donaldson", MALE_IMAGE_URL);
-    private final User user8 = new User("Dee", "Dempsey", FEMALE_IMAGE_URL);
-    private final User user9 = new User("Elliott", "Enderson", MALE_IMAGE_URL);
-    private final User user10 = new User("Elizabeth", "Engle", FEMALE_IMAGE_URL);
-    private final User user11 = new User("Frank", "Frandson", MALE_IMAGE_URL);
-    private final User user12 = new User("Fran", "Franklin", FEMALE_IMAGE_URL);
-    private final User user13 = new User("Gary", "Gilbert", MALE_IMAGE_URL);
-    private final User user14 = new User("Giovanna", "Giles", FEMALE_IMAGE_URL);
-    private final User user15 = new User("Henry", "Henderson", MALE_IMAGE_URL);
-    private final User user16 = new User("Helen", "Hopwell", FEMALE_IMAGE_URL);
-    private final User user17 = new User("Igor", "Isaacson", MALE_IMAGE_URL);
-    private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
-    private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
-    private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
+    public void put(String authorAlias, String message, long time){
+        Table table = dynamoDB.getTable(TABLE_NAME);
 
-    public PostResponse postStatus(PostRequest postRequest){
-        return new PostResponse();
+        try {
+            System.out.println("Adding a new item...");
+            PutItemOutcome outcome = table
+                    .putItem(new Item().withPrimaryKey("author", authorAlias,
+                            "date", String.valueOf(time))
+                    .with("message", message));
+
+            System.out.println("PutStatus succeeded:\n" + outcome.getPutItemResult());
+
+            // add to queue
+            UserDAO userDAO = new UserDAO();
+            User author = userDAO.get(authorAlias);
+            Status status = new Status(message, author, time);
+            addToQueue(status);
+        }
+        catch (Exception e) {
+            System.err.println("Unable to add Status: " + authorAlias + ": " + message);
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Server Error : Unable to add Status:" + authorAlias + " message:" + message);
+        }
     }
 
-    public FeedResponse getFeed(FeedRequest request){
-        assert request.getLimit() > 0;
-        assert request.getUser() != null;
+    public Status get(String authorAlias, long time){
+        Table table = dynamoDB.getTable(TABLE_NAME);
 
-        List<Status> allStatuses = getDummyStatuses(5);
-        List<Status> responseStatuses = new ArrayList<>(request.getLimit());
+        GetItemSpec spec = new GetItemSpec().withPrimaryKey("author", authorAlias,
+                "date", String.valueOf(time));
 
-        boolean hasMorePages = false;
+        try {
+            System.out.println("Attempting to read the Status...");
+            Item outcome = table.getItem(spec);
+            System.out.println("GetStatus succeeded: " + outcome);
 
-        if(request.getLimit() > 0) {
-            if (allStatuses != null) {
-                int feedIndex = getFeedStartingIndex(request.getLastStatus(), allStatuses);
+            // get User info
+            UserDAO userDAO = new UserDAO();
+            User author = userDAO.get(authorAlias);
+            long dateTime = Long.parseLong(outcome.getString("date"));
 
-                for(int limitCounter = 0; feedIndex < allStatuses.size() && limitCounter < request.getLimit(); feedIndex++, limitCounter++) {
-                    responseStatuses.add(allStatuses.get(feedIndex));
-                }
+            return new Status(outcome.getString("message"), author, dateTime);
+        }
+        catch (Exception e) {
+            System.err.println("Unable to read Status: " + authorAlias + " " + time);
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Server Error : Unable to get Status:" + authorAlias + " time:" + time);
+        }
+    }
 
-                hasMorePages = feedIndex < allStatuses.size();
-            }
+    public PagedResults<Status> queryByAuthor(String author, int pageSize, Status lastStatus){
+        PagedResults<Status> result = new PagedResults<>();
+
+        HashMap<String, String> nameMap = new HashMap<>();
+        nameMap.put("#ath", "author");
+
+        HashMap<String, AttributeValue> valueMap = new HashMap<>();
+        valueMap.put(":author", new AttributeValue().withS(author));
+
+        QueryRequest queryRequest = new QueryRequest()
+                .withTableName(TABLE_NAME)
+                .withKeyConditionExpression("#ath = :author")
+                .withExpressionAttributeNames(nameMap)
+                .withExpressionAttributeValues(valueMap)
+                .withScanIndexForward(false)
+                .withLimit(pageSize);
+
+        if (lastStatus != null) {
+            Map<String, AttributeValue> lastKey = new HashMap<>();
+            lastKey.put("date", new AttributeValue().withS(String.valueOf(lastStatus.getWhenPosted())));
+            lastKey.put("author", new AttributeValue().withS(lastStatus.getAuthor().getAlias()));
+
+            queryRequest = queryRequest.withExclusiveStartKey(lastKey);
         }
 
-        return new FeedResponse(responseStatuses, hasMorePages);
-    }
-
-    public StoryResponse getStory(StoryRequest request){
-        assert request.getLimit() > 0;
-        assert request.getUser() != null;
-
-        List<Status> allStatuses = getDummyStatuses(20);
-        List<Status> responseStatuses = new ArrayList<>(request.getLimit());
-
-        boolean hasMorePages = false;
-
-        if(request.getLimit() > 0) {
-            if (allStatuses != null) {
-                int storyIndex = getStoryStartingIndex(request.getLastStatus(), allStatuses);
-
-                for(int limitCounter = 0; storyIndex < allStatuses.size() && limitCounter < request.getLimit(); storyIndex++, limitCounter++) {
-                    responseStatuses.add(allStatuses.get(storyIndex));
-                }
-
-                hasMorePages = storyIndex < allStatuses.size();
-            }
-        }
-
-        return new StoryResponse(responseStatuses, hasMorePages);
-    }
-
-    private int getFeedStartingIndex(Status lastStatus, List<Status> allStatuses) {
-
-        int feedIndex = 0;
-
-        if(lastStatus != null) {
-            // This is a paged request for something after the first page. Find the first item
-            // we should return
-            for (int i = 0; i < allStatuses.size(); i++) {
-                if(lastStatus.equals(allStatuses.get(i))) {
-                    // We found the index of the last item returned last time. Increment to get
-                    // to the first one we should return
-                    feedIndex = i + 1;
-                }
-            }
-        }
-
-        return feedIndex;
-    }
-
-    private int getStoryStartingIndex(Status lastStatus, List<Status> allStatuses) {
-
-        int feedIndex = 0;
-
-        if(lastStatus != null) {
-            // This is a paged request for something after the first page. Find the first item
-            // we should return
-            for (int i = 0; i < allStatuses.size(); i++) {
-                if(lastStatus.equals(allStatuses.get(i))) {
-                    // We found the index of the last item returned last time. Increment to get
-                    // to the first one we should return
-                    feedIndex = i + 1;
+        try {
+            System.out.println("Statuses of " + author);
+            QueryResult queryResult = client.query(queryRequest);
+            List<Map<String, AttributeValue>> items = queryResult.getItems();
+            if (items != null) {
+                for (Map<String, AttributeValue> item : items){
+                    Status status = get(item.get("author").getS(), Long.parseLong(item.get("date").getS()));
+                    result.addValue(status);
                 }
             }
-        }
 
-        return feedIndex;
-    }
-
-    List<Status> getDummyStatuses(int count) {
-        List<User> users = getDummyUsers();
-
-        List<Status> statuses = new ArrayList<>(count);
-
-        for (User user: users) {
-            for (int i = 0; i < count; i++) {
-                String message = "test" + i + "\n" + user.getAlias() + "\nhttps://www.google.com @BenDover\nhttp://www.byu.edu";
-                Status stat = new Status(message, user);
-                statuses.add(stat);
+            Map<String, AttributeValue> lastKey = queryResult.getLastEvaluatedKey();
+            if (lastKey != null) {
+                result.setLastKey(lastKey.get("date").getS());
             }
+
+            return result;
         }
-
-        return statuses;
+        catch (Exception e) {
+            System.err.println("Unable to query");
+            System.err.println(e.getMessage());
+            throw new RuntimeException("Server Error : Unable to query by Author:" + author);
+        }
     }
 
-    /**
-     * Returns the list of dummy user data. This is written as a separate method to allow
-     * mocking of the users.
-     *
-     * @return the generator.
-     */
-    List<User> getDummyUsers() {
-        return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
-                user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
-                user19, user20);
+    private void addToQueue(Status status){
+        String messageBody = (new Gson()).toJson(status);
+
+        SendMessageRequest send_msg_request = new SendMessageRequest()
+                .withQueueUrl(POST_QUEUE_URL)
+                .withMessageBody(messageBody)
+                .withDelaySeconds(5);
+
+        AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+        SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);
+        System.out.println(send_msg_request);
     }
+
 }
