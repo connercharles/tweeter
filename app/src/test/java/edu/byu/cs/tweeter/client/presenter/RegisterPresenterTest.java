@@ -26,7 +26,7 @@ class RegisterPresenterTest {
         User user = new User("Ben", "Dover",
                 "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg");
 
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
         String firstname = "Ben";
         String lastname = "Dover";
         String username = "testing";

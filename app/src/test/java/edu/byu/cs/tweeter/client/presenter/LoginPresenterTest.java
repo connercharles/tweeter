@@ -29,7 +29,7 @@ class LoginPresenterTest {
         User user = new User("Test", "User",
                 "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg");
 
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
 
         request = new LoginRequest(username, password);
         response = new LoginResponse(user, authToken);

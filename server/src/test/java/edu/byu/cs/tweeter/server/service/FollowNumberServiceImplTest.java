@@ -16,13 +16,11 @@ import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 public class FollowNumberServiceImplTest {
     private FollowNumberRequest request;
     private FollowNumberResponse expectedResponse;
-    private FollowingDAO mockFollowingDAO;
     private FollowNumberServiceImpl followNumberServiceImplSpy;
 
     @BeforeEach
     public void setup() {
-        User user = new User("FirstName1", "LastName1",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User user = new User("test", "user2", null);
 
         request = new FollowNumberRequest(user);
 
@@ -31,11 +29,8 @@ public class FollowNumberServiceImplTest {
 
     @Test
     public void testGetFollowNumber_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-//        Mockito.when(mockFollowingDAO.getFollowNumbers(request)).thenReturn(expectedResponse);
-
-        followNumberServiceImplSpy = Mockito.spy(FollowNumberServiceImpl.class);
-        Mockito.when(followNumberServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+        followNumberServiceImplSpy = Mockito.mock(FollowNumberServiceImpl.class);
+        Mockito.when(followNumberServiceImplSpy.getFollowNumbers(request)).thenReturn(expectedResponse);
 
         FollowNumberResponse response = followNumberServiceImplSpy.getFollowNumbers(request);
         Assertions.assertEquals(expectedResponse, response);
@@ -48,6 +43,7 @@ public class FollowNumberServiceImplTest {
         FollowNumberResponse response = followNumberServiceImplSpy.getFollowNumbers(request);
         Assertions.assertTrue(response.isSuccess());
         Assertions.assertNotNull(response.getFollowerNumber());
+        Assertions.assertNotNull(response.getFollowingNumber());
     }
 
 }

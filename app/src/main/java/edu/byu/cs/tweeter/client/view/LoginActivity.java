@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.client.view;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
                 // It doesn't matter what values we put here. We will be logged in with a hard-coded dummy user.
                 LoginRequest loginRequest = new LoginRequest("dummyUserName", "dummyPassword");
                 LoginTask loginTask = new LoginTask(presenter, LoginActivity.this);
-                loginTask.execute(loginRequest);
+                loginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, loginRequest);
             }
         });
     }

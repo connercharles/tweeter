@@ -24,9 +24,10 @@ public class RegisterHandlerTest {
     public void setup() {
         User user1 = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
+        AuthToken auth = new AuthToken(123, "test");
 
         request = new RegisterRequest("test", "user", "username", "pass", null);
-        expectedResponse = new RegisterResponse(user1, new AuthToken());
+        expectedResponse = new RegisterResponse(user1, auth);
 
         mockRegisterService = Mockito.mock(RegisterServiceImpl.class);
         Mockito.when(mockRegisterService.register(request)).thenReturn(expectedResponse);

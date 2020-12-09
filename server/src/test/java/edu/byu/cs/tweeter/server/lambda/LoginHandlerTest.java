@@ -25,9 +25,10 @@ public class LoginHandlerTest {
     public void setup() {
         User user1 = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
+        AuthToken auth = new AuthToken(123, "test");
 
         request = new LoginRequest("test", "pass");
-        expectedResponse = new LoginResponse(user1, new AuthToken());
+        expectedResponse = new LoginResponse(user1, auth);
 
         mockLoginService = Mockito.mock(LoginServiceImpl.class);
         Mockito.when(mockLoginService.login(request)).thenReturn(expectedResponse);

@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.view.main;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -279,7 +280,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View{
 
             StoryTask storyTask = new StoryTask(presenter, this);
             StoryRequest request = new StoryRequest(user, PAGE_SIZE, lastStatus);
-            storyTask.execute(request);
+            storyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
         }
 
         @Override

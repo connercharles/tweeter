@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.view.main;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -279,7 +280,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View{
 
             FeedTask feedTask = new FeedTask(presenter, this);
             FeedRequest request = new FeedRequest(user, PAGE_SIZE, lastStatus);
-            feedTask.execute(request);
+            feedTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
         }
 
         @Override

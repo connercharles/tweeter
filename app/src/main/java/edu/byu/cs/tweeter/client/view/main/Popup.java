@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.view.main;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +71,8 @@ public class Popup extends DialogFragment implements PostPresenter.View, PostTas
             public void onClick(View v) {
                 PostTask postTask = new PostTask(presenter, Popup.this);
                 PostRequest request = new PostRequest(authToken, user, prompt.getText().toString());
-                postTask.execute(request);
+                postTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
+                dismiss();
             }
         });
         exitBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +98,6 @@ public class Popup extends DialogFragment implements PostPresenter.View, PostTas
 
     @Override
     public void postSuccessful(PostResponse postResponse) {
-        dismiss();
     }
 
     @Override

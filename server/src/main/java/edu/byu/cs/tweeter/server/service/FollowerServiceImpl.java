@@ -22,7 +22,7 @@ public class FollowerServiceImpl extends RequestChecker implements FollowerServi
                 lastFollower = request.getLastFollower().getAlias();
             }
 
-            PagedResults<User> results = getFollowingDAO().queryByFollowee(request.getFollowee().getAlias(),
+            PagedResults<User> results = getFollowingDAO().queryByFollower(request.getFollowee().getAlias(),
                     request.getLimit(), lastFollower);
             List<User> followers = results.getValues();
 

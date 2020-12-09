@@ -28,7 +28,7 @@ class MainActivityPresenterTest {
 
 
     public void logoutSetup() throws IOException, TweeterRemoteException {
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
 
         requestLogout = new LogoutRequest(authToken);
         responseLogout = new LogoutResponse();

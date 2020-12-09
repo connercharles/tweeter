@@ -28,22 +28,16 @@ public class AuthTokenDAO {
     private static DynamoDB dynamoDB = new DynamoDB(client);
     private static final int EXPIRE_TIME = -2; // in hours
 
-    public LogoutResponse logout(LogoutRequest request) {
-        return new LogoutResponse();
-    }
-
     public String put(){
         Table table = dynamoDB.getTable(TABLE_NAME);
         String token = UUID.randomUUID().toString().substring(0,10);
-        long time = Calendar.getInstance().getTimeInMillis(); // TODO: change to 2 hours time from now
+        long time = Calendar.getInstance().getTimeInMillis();
 
         try {
             System.out.println("Adding a new item...");
             PutItemOutcome outcome = table
                     .putItem(new Item().withPrimaryKey("token", token,
                             "date", String.valueOf(time)));
-
-            // TODO: dynamodb ttl
 
             System.out.println("PutAuth succeeded:\n" + outcome.getPutItemResult());
             return token;

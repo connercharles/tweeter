@@ -7,10 +7,12 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
+import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import edu.byu.cs.tweeter.server.service.FollowServiceImpl;
 
 public class FollowHandlerTest {
@@ -26,7 +28,9 @@ public class FollowHandlerTest {
         User user2 = new User("FirstName2", "LastName2",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
-        request = new FollowRequest(user1, user2);
+        AuthToken auth = new AuthToken(123, "test");
+
+        request = new FollowRequest(user1, user2, auth);
         expectedResponse = new FollowResponse();
 
         mockFollowService = Mockito.mock(FollowServiceImpl.class);

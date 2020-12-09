@@ -25,7 +25,7 @@ public class LogoutServiceProxyTest {
 
     @BeforeEach
     public void setup() throws IOException, TweeterRemoteException {
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
 
         // Setup request objects to use in the tests
         validRequest = new LogoutRequest(authToken);

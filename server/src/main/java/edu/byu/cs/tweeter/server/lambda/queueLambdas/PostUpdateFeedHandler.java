@@ -31,12 +31,4 @@ public class PostUpdateFeedHandler implements RequestHandler<SQSEvent, Void> {
 
     PostUpdateService getService() {return new PostUpdateService();}
 
-    // get service functions like other handlers
-
-
-
-    // grab from post queue
-    // get all people following author
-    // batch it up to 25 people (make subarrays of 25)
-    // send to feed queue
 }

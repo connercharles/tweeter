@@ -17,22 +17,22 @@ import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 public class LogoutServiceImplTest {
     private LogoutRequest request;
     private LogoutResponse expectedResponse;
-    private AuthTokenDAO mockAuthTokenDAO;
     private LogoutServiceImpl logoutServiceImplSpy;
 
     @BeforeEach
     public void setup() {
-//        request = new LogoutRequest(new AuthToken());
+        AuthTokenDAO authDAO = new AuthTokenDAO();
+        String token = authDAO.put();
+        AuthToken auth = authDAO.get(token);
+
+        request = new LogoutRequest(auth);
     }
 
     @Test
     public void testLogout_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         expectedResponse = new LogoutResponse();
-        mockAuthTokenDAO = Mockito.mock(AuthTokenDAO.class);
-        Mockito.when(mockAuthTokenDAO.logout(request)).thenReturn(expectedResponse);
-
-        logoutServiceImplSpy = Mockito.spy(LogoutServiceImpl.class);
-//        Mockito.when(logoutServiceImplSpy.getAuthTokenDAO()).thenReturn(mockAuthTokenDAO);
+        logoutServiceImplSpy = Mockito.mock(LogoutServiceImpl.class);
+        Mockito.when(logoutServiceImplSpy.logout(request)).thenReturn(expectedResponse);
 
         LogoutResponse response = logoutServiceImplSpy.logout(request);
         Assertions.assertEquals(expectedResponse, response);

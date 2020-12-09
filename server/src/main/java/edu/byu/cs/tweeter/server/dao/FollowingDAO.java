@@ -62,7 +62,6 @@ public class FollowingDAO extends BatchWriter {
         }
     }
 
-
     public void put(String follower, String followee){
         Table table = dynamoDB.getTable(TABLE_NAME);
 
@@ -248,12 +247,14 @@ public class FollowingDAO extends BatchWriter {
         }
     }
 
-    public int getFollowersNumber(String followee){
+    public List<String> getAll(String alias) {
+        List<String> results = new ArrayList<>();
+
         HashMap<String, String> nameMap = new HashMap<>();
         nameMap.put("#fe", "followee");
 
         HashMap<String, AttributeValue> valueMap = new HashMap<>();
-        valueMap.put(":followee", new AttributeValue().withS(followee));
+        valueMap.put(":followee", new AttributeValue().withS(alias));
 
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName(TABLE_NAME)
@@ -263,61 +264,23 @@ public class FollowingDAO extends BatchWriter {
                 .withExpressionAttributeValues(valueMap);
 
         try {
-            UserDAO userDAO = new UserDAO();
-            List<User> followers = new ArrayList<>();
-
-            System.out.println("Followers of " + followee);
+            System.out.println("get all of " + alias);
             QueryResult queryResult = client.query(queryRequest);
+            System.out.println("results of query: " + queryResult.toString());
             List<Map<String, AttributeValue>> items = queryResult.getItems();
             if (items != null) {
                 for (Map<String, AttributeValue> item : items){
-                    User user = userDAO.get(item.get("follower").getS());
-                    followers.add(user);
+                    results.add(item.get("follower").getS());
                 }
             }
 
-            return followers.size();
+            return results;
         }
         catch (Exception e) {
-            System.err.println("Unable to query");
+            System.err.println("Unable to get all");
             System.err.println(e.getMessage());
-            throw new RuntimeException("Server Error : Unable to query Followee number:" + followee);
+            throw new RuntimeException("Server Error : Unable to get all followers:" + alias);
         }
     }
 
-    public int getFollowingNumber(String follower){
-        HashMap<String, String> nameMap = new HashMap<>();
-        nameMap.put("#fr", "follower");
-
-        HashMap<String, AttributeValue> valueMap = new HashMap<>();
-        valueMap.put(":follower", new AttributeValue().withS(follower));
-
-        QueryRequest queryRequest = new QueryRequest()
-                .withTableName(TABLE_NAME)
-                .withKeyConditionExpression("#fr = :follower")
-                .withExpressionAttributeNames(nameMap)
-                .withExpressionAttributeValues(valueMap);
-
-        try {
-            UserDAO userDAO = new UserDAO();
-            List<User> followees = new ArrayList<>();
-
-            System.out.println("Followees of " + follower);
-            QueryResult queryResult = client.query(queryRequest);
-            List<Map<String, AttributeValue>> items = queryResult.getItems();
-            if (items != null) {
-                for (Map<String, AttributeValue> item : items){
-                    User user = userDAO.get(item.get("followee").getS());
-                    followees.add(user);
-                }
-            }
-
-            return followees.size();
-        }
-        catch (Exception e) {
-            System.err.println("Unable to query");
-            System.err.println(e.getMessage());
-            throw new RuntimeException("Server Error : Unable to query Follower:" + follower);
-        }
-    }
 }

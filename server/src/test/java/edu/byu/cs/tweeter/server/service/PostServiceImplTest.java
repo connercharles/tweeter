@@ -12,32 +12,31 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
+import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import edu.byu.cs.tweeter.server.dao.StatusDAO;
 
 public class PostServiceImplTest {
     private PostRequest request;
     private PostResponse expectedResponse;
-    private StatusDAO mockStatusDAO;
     private PostServiceImpl postServiceImplSpy;
 
     @BeforeEach
     public void setup() {
         String message = "so I was like...";
 
-        User author = new User("Test", "User",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
-//        AuthToken authToken = new AuthToken();
-//        request = new PostRequest(authToken, author, message);
+        User author = new User("test", "user2", null);
+        AuthTokenDAO authDAO = new AuthTokenDAO();
+        String token = authDAO.put();
+        AuthToken auth = authDAO.get(token);
+
+        request = new PostRequest(auth, author, message);
     }
 
     @Test
     public void testPost_validRequest_correctResponse() throws IOException, TweeterRemoteException {
         expectedResponse = new PostResponse();
-        mockStatusDAO = Mockito.mock(StatusDAO.class);
-//        Mockito.when(mockStatusDAO.postStatus(request)).thenReturn(expectedResponse);
-
-        postServiceImplSpy = Mockito.spy(PostServiceImpl.class);
-        Mockito.when(postServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+        postServiceImplSpy = Mockito.mock(PostServiceImpl.class);
+        Mockito.when(postServiceImplSpy.postStatus(request)).thenReturn(expectedResponse);
 
         PostResponse response = postServiceImplSpy.postStatus(request);
         Assertions.assertEquals(expectedResponse, response);

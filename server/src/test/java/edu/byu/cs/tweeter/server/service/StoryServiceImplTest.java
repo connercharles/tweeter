@@ -18,13 +18,11 @@ import edu.byu.cs.tweeter.server.dao.StatusDAO;
 public class StoryServiceImplTest {
     private StoryRequest request;
     private StoryResponse expectedResponse;
-    private StatusDAO mockStatusDAO;
     private StoryServiceImpl storyServiceImplSpy;
 
     @BeforeEach
     public void setup() {
-        User resultUser = new User("FirstName2", "LastName2",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
+        User resultUser = new User("test", "user2", null);
 
         Status status1 = new Status("test1", resultUser);
         Status status2 = new Status("test2", resultUser);
@@ -36,11 +34,8 @@ public class StoryServiceImplTest {
 
     @Test
     public void testGetStory_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        mockStatusDAO = Mockito.mock(StatusDAO.class);
-//        Mockito.when(mockStatusDAO.getStory(request)).thenReturn(expectedResponse);
-
-        storyServiceImplSpy = Mockito.spy(StoryServiceImpl.class);
-        Mockito.when(storyServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+        storyServiceImplSpy = Mockito.mock(StoryServiceImpl.class);
+        Mockito.when(storyServiceImplSpy.getStory(request)).thenReturn(expectedResponse);
 
         StoryResponse response = storyServiceImplSpy.getStory(request);
         Assertions.assertEquals(expectedResponse, response);

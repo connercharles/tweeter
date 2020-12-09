@@ -39,7 +39,7 @@ public class StatusDAO {
                             "date", String.valueOf(time))
                     .with("message", message));
 
-            System.out.println("PutStatus succeeded:\n" + outcome.getPutItemResult());
+            System.out.println("PutStatus succeeded:" + outcome.getPutItemResult());
 
             // add to queue
             UserDAO userDAO = new UserDAO();
@@ -134,8 +134,7 @@ public class StatusDAO {
 
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(POST_QUEUE_URL)
-                .withMessageBody(messageBody)
-                .withDelaySeconds(5);
+                .withMessageBody(messageBody);
 
         AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
         SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);

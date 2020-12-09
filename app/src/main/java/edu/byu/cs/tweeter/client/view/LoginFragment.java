@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.client.view;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,7 +60,7 @@ public class LoginFragment extends Fragment implements LoginPresenter.View, Logi
                     // It doesn't matter what values we put here. We will be logged in with a hard-coded dummy user.
                     LoginRequest loginRequest = new LoginRequest(username, password);
                     LoginTask loginTask = new LoginTask(presenter, LoginFragment.this);
-                    loginTask.execute(loginRequest);
+                    loginTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, loginRequest);
                 } else{
                     Toast.makeText(getContext(), "Please fill out everything", Toast.LENGTH_LONG).show();
                 }

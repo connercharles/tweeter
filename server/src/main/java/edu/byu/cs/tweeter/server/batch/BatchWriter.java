@@ -10,8 +10,8 @@ import edu.byu.cs.tweeter.server.dao.UserDAO;
 public class BatchWriter {
     // How many follower users to add
     // We recommend you test this with a smaller number first, to make sure it works for you
-//    private final static int NUM_USERS = 10000;
-    private final static int NUM_USERS = 30;
+    private final static int NUM_USERS = 10000;
+//    private final static int NUM_USERS = 30;
 
     // The alias of the user to be followed by each user created
     // This example code does not add the target user, that user must be added separately.
@@ -46,7 +46,7 @@ public class BatchWriter {
 
         // Call the DAOs for the database logic
         if (users.size() > 0) {
-            userDAO.addUserBatch(users);
+            userDAO.addUserBatch(users, FOLLOW_TARGET);
         }
         if (followers.size() > 0) {
             followDAO.addFollowersBatch(followers, FOLLOW_TARGET);

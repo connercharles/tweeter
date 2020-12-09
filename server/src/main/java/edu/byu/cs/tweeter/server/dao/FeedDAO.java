@@ -67,24 +67,24 @@ public class FeedDAO extends BatchWriter{
         }
     }
 
-    public void put(String follower, long time, String author){
-        Table table = dynamoDB.getTable(TABLE_NAME);
-
-        try {
-            System.out.println("Adding a new Feed...");
-            PutItemOutcome outcome = table
-                    .putItem(new Item().withPrimaryKey("follower", follower,
-                            "date", String.valueOf(time))
-                            .with("author", author));
-
-            System.out.println("PutItem succeeded:\n" + outcome.getPutItemResult());
-        }
-        catch (Exception e) {
-            System.err.println("Unable to add Feed: " + follower + " author: " + author);
-            System.err.println(e.getMessage());
-            throw new RuntimeException("Server Error : Unable to add Feed: " + follower + " author: " + author);
-        }
-    }
+//    public void put(String follower, long time, String author){
+//        Table table = dynamoDB.getTable(TABLE_NAME);
+//
+//        try {
+//            System.out.println("Adding a new Feed...");
+//            PutItemOutcome outcome = table
+//                    .putItem(new Item().withPrimaryKey("follower", follower,
+//                            "date", String.valueOf(time))
+//                            .with("author", author));
+//
+//            System.out.println("PutItem succeeded:\n" + outcome.getPutItemResult());
+//        }
+//        catch (Exception e) {
+//            System.err.println("Unable to add Feed: " + follower + " author: " + author);
+//            System.err.println(e.getMessage());
+//            throw new RuntimeException("Server Error : Unable to add Feed: " + follower + " author: " + author);
+//        }
+//    }
 
     public void putAll(Status status, List<String> followers){
         TableWriteItems items = new TableWriteItems(TABLE_NAME);

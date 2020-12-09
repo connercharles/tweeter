@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.view.main;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -58,6 +59,7 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
     private UserActivityPresenter presenter;
     public static User mainUser;
     public static User clickedUser;
+    public static AuthToken authToken;
 
     private TextView followeeCount;
     private TextView followerCount;
@@ -72,12 +74,12 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
         presenter = new UserActivityPresenter(this);
 
         clickedUser = (User) getIntent().getSerializableExtra(CLICKED_USER);
-        mainUser = (User) getIntent().getSerializableExtra(MAIN_USER);
+        mainUser = (User) getIntent().getSerializableExtra(MAIN_USER); // TODO: FIX BUG WHERE CLICK ON USER TWICE AND CHANGES MAIN USER
         if(clickedUser == null || mainUser == null) {
             throw new RuntimeException("User(s) not passed to activity");
         }
 
-        AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
+        authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
         TextView userName = findViewById(R.id.userPgName);
         userName.setText(clickedUser.getName());
@@ -93,11 +95,11 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
 
         FollowNumberTask followNumberTask = new FollowNumberTask(presenter, UserActivity.this);
         FollowNumberRequest followNumberRequest = new FollowNumberRequest(clickedUser);
-        followNumberTask.execute(followNumberRequest);
+        followNumberTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, followNumberRequest);
 
         IsFollowingTask isFollowingTask = new IsFollowingTask(presenter, UserActivity.this);
         IsFollowingRequest isFollowingRequest = new IsFollowingRequest(mainUser, clickedUser);
-        isFollowingTask.execute(isFollowingRequest);
+        isFollowingTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, isFollowingRequest);
 
         followBtn = findViewById(R.id.userPgFollowButton);
         followBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,16 +107,16 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
             public void onClick(View v) {
                 if (followBtn.getText().equals(FOLLOW_STRING)){
                     FollowTask followTask = new FollowTask(presenter, UserActivity.this);
-                    FollowRequest request = new FollowRequest(mainUser, clickedUser);
-                    followTask.execute(request);
+                    FollowRequest request = new FollowRequest(mainUser, clickedUser, authToken);
+                    followTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
 
                     followBtn.setText(FOLLOWING_STRING);
                     followBtn.setBackgroundColor(Color.WHITE);
                     followBtn.setTextColor(Color.BLACK);
                 } else{
                     UnfollowTask unfollowTask = new UnfollowTask(presenter, UserActivity.this);
-                    UnfollowRequest request = new UnfollowRequest(mainUser, clickedUser);
-                    unfollowTask.execute(request);
+                    UnfollowRequest request = new UnfollowRequest(mainUser, clickedUser, authToken);
+                    unfollowTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
 
                     followBtn.setText(FOLLOW_STRING);
                     followBtn.setBackgroundColor(Color.parseColor("#0000FF"));
@@ -162,13 +164,13 @@ public class UserActivity extends AppCompatActivity implements FollowNumberTask.
                                 .commit();
                         break;
                     case FOLLOWING_FRAGMENT_POSITION:
-                        FollowingFragment followingFragment = FollowingFragment.newInstance(clickedUser, authToken);
+                        FollowingFragment followingFragment = FollowingFragment.newInstance(clickedUser, authToken, mainUser);
                         fm.beginTransaction()
                                 .replace(R.id.userPgFragmentViewer, followingFragment)
                                 .commit();
                         break;
                     case FOLLOWER_FRAGMENT_POSITION:
-                        FollowerFragment followerFragment = FollowerFragment.newInstance(clickedUser, authToken);
+                        FollowerFragment followerFragment = FollowerFragment.newInstance(clickedUser, authToken, mainUser);
                         fm.beginTransaction()
                                 .replace(R.id.userPgFragmentViewer, followerFragment)
                                 .commit();

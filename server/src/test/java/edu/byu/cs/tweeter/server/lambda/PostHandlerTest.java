@@ -24,8 +24,9 @@ public class PostHandlerTest {
     public void setup() {
         User user1 = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        AuthToken auth = new AuthToken(123, "test");
 
-        request = new PostRequest(new AuthToken(), user1, "hi");
+        request = new PostRequest(auth, user1, "hi");
         expectedResponse = new PostResponse();
 
         mockPostService = Mockito.mock(PostServiceImpl.class);

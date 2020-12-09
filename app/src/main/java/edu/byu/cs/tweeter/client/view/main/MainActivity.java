@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.client.view.main;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,11 +43,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     User user;
+    private AuthToken authToken;
     private MainActivityPresenter presenter;
 
     private TextView followeeCount;
     private TextView followerCount;
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+
+        FollowNumberTask followNumberTask = new FollowNumberTask(presenter, MainActivity.this);
+        FollowNumberRequest request = new FollowNumberRequest(user);
+        followNumberTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             throw new RuntimeException("User not passed to activity");
         }
 
-        AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
+        authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -95,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
 
         FollowNumberTask followNumberTask = new FollowNumberTask(presenter, MainActivity.this);
         FollowNumberRequest request = new FollowNumberRequest(user);
-        followNumberTask.execute(request);
+        followNumberTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
 
         TextView logout = findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener(){
@@ -103,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             public void onClick(View view){
                 LogoutTask logoutTask = new LogoutTask(presenter, MainActivity.this);
                 LogoutRequest request = new LogoutRequest(authToken);
-                logoutTask.execute(request);
+                logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
             }
         });
 

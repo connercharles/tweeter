@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.client.view.main.following;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
     private static final String LOG_TAG = "FollowingFragment";
     private static final String USER_KEY = "UserKey";
+    private static final String MAIN_USER_KEY = "MainUserKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     private static final int LOADING_DATA_VIEW = 0;
@@ -46,6 +48,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
     private static final int PAGE_SIZE = 10;
 
     private User user;
+    private User mainUser;
     private AuthToken authToken;
     private FollowingPresenter presenter;
 
@@ -59,11 +62,12 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
      * @param authToken the auth token for this user's session.
      * @return the fragment.
      */
-    public static FollowingFragment newInstance(User user, AuthToken authToken) {
+    public static FollowingFragment newInstance(User user, AuthToken authToken, User mainUser) {
         FollowingFragment fragment = new FollowingFragment();
 
-        Bundle args = new Bundle(2);
+        Bundle args = new Bundle(3);
         args.putSerializable(USER_KEY, user);
+        args.putSerializable(MAIN_USER_KEY, mainUser);
         args.putSerializable(AUTH_TOKEN_KEY, authToken);
 
         fragment.setArguments(args);
@@ -77,6 +81,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
         //noinspection ConstantConditions
         user = (User) getArguments().getSerializable(USER_KEY);
+        mainUser = (User) getArguments().getSerializable(MAIN_USER_KEY);
         authToken = (AuthToken) getArguments().getSerializable(AUTH_TOKEN_KEY);
 
         presenter = new FollowingPresenter(this);
@@ -124,7 +129,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
                         Intent intent = new Intent(getActivity(), UserActivity.class);
 
                         intent.putExtra(UserActivity.CLICKED_USER, clickedUser);
-                        intent.putExtra(UserActivity.MAIN_USER, user);
+                        intent.putExtra(UserActivity.MAIN_USER, mainUser);
                         intent.putExtra(UserActivity.AUTH_TOKEN_KEY, authToken);
 
                         startActivity(intent);
@@ -274,7 +279,7 @@ public class FollowingFragment extends Fragment implements FollowingPresenter.Vi
 
             GetFollowingTask getFollowingTask = new GetFollowingTask(presenter, this);
             FollowingRequest request = new FollowingRequest(user, PAGE_SIZE, lastFollowee);
-            getFollowingTask.execute(request);
+            getFollowingTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, request);
         }
 
         /**

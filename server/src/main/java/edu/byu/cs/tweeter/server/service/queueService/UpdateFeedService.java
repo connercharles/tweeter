@@ -15,7 +15,8 @@ public class UpdateFeedService {
         Status status = request.getStatus();
 
         FeedDAO feedDAO = new FeedDAO();
-        System.out.println(request.getFollowers());
+        System.out.println("Request followers: " + request.getFollowers());
+        System.out.println("Request status: " + request.getStatus());
 
         try{
             feedDAO.putAll(status, request.getFollowers());

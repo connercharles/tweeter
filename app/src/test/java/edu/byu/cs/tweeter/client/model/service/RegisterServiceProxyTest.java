@@ -33,7 +33,7 @@ public class RegisterServiceProxyTest {
 
         User user = new User(firstname, lastname,
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
 
         // Setup request objects to use in the tests
         validRequest = new RegisterRequest(firstname, lastname, username, password, null);

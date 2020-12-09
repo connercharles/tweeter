@@ -18,12 +18,11 @@ public class FollowingServiceImplTest {
 
     private FollowingRequest request;
     private FollowingResponse expectedResponse;
-    private FollowingDAO mockFollowingDAO;
     private FollowingServiceImpl followingServiceImplSpy;
 
     @BeforeEach
     public void setup() {
-        User currentUser = new User("FirstName", "LastName", null);
+        User currentUser = new User("test", "user2", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
@@ -45,11 +44,8 @@ public class FollowingServiceImplTest {
      */
     @Test
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-//        Mockito.when(mockFollowingDAO.getFollowees(request)).thenReturn(expectedResponse);
-
-        followingServiceImplSpy = Mockito.spy(FollowingServiceImpl.class);
-        Mockito.when(followingServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+        followingServiceImplSpy = Mockito.mock(FollowingServiceImpl.class);
+        Mockito.when(followingServiceImplSpy.getFollowees(request)).thenReturn(expectedResponse);
 
         FollowingResponse response = followingServiceImplSpy.getFollowees(request);
         Assertions.assertEquals(expectedResponse, response);

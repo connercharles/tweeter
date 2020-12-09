@@ -26,7 +26,7 @@ public class RegisterServiceImpl implements RegisterService {
             imageUrl = gets3DAO().put(request.getUsername() + ".png", imageStream);
 
             getUserDAO().put(request.getFirstname(), request.getLastname(),
-                    request.getUsername(), imageUrl, hashPassword);
+                    request.getUsername(), imageUrl, hashPassword, 0, 0);
             User user = getUserDAO().get(request.getUsername());
 
             String token = getAuthDAO().put();

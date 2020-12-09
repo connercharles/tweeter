@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
@@ -25,8 +26,9 @@ public class UnfollowHandlerTest {
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
         User user2 = new User("FirstName2", "LastName2",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
+        AuthToken auth = new AuthToken(123, "test");
 
-        request = new UnfollowRequest(user1, user2);
+        request = new UnfollowRequest(user1, user2, auth);
         expectedResponse = new UnfollowResponse();
 
         mockUnfollowService = Mockito.mock(UnfollowServiceImpl.class);

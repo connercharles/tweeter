@@ -18,12 +18,11 @@ import edu.byu.cs.tweeter.server.dao.StatusDAO;
 public class FeedServiceImplTest {
     private FeedRequest request;
     private FeedResponse expectedResponse;
-    private StatusDAO mockStatusDAO;
     private FeedServiceImpl feedServiceImplSpy;
 
     @BeforeEach
     public void setup() {
-        User resultUser = new User("FirstName2", "LastName2",
+        User resultUser = new User("test", "user2",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
         Status status1 = new Status("test1", resultUser);
@@ -37,11 +36,8 @@ public class FeedServiceImplTest {
 
     @Test
     public void testGetFeed_validRequest_correctResponse() throws IOException, TweeterRemoteException {
-        mockStatusDAO = Mockito.mock(StatusDAO.class);
-//        Mockito.when(mockStatusDAO.getFeed(request)).thenReturn(expectedResponse);
-
-        feedServiceImplSpy = Mockito.spy(FeedServiceImpl.class);
-//        Mockito.when(feedServiceImplSpy.getStatusDAO()).thenReturn(mockStatusDAO);
+        feedServiceImplSpy = Mockito.mock(FeedServiceImpl.class);
+        Mockito.when(feedServiceImplSpy.getFeed(request)).thenReturn(expectedResponse);
 
         FeedResponse response = feedServiceImplSpy.getFeed(request);
         Assertions.assertEquals(expectedResponse, response);

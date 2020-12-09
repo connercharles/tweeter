@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.FollowNumberService;
@@ -41,7 +42,9 @@ class UserActivityPresenterTest {
     private final User user2 = new User("Ben", "Dover", null);
 
     public void followSetup() throws IOException, TweeterRemoteException {
-        requestFollow = new FollowRequest(user, user2);
+        AuthToken authToken = new AuthToken(123, "test");
+
+        requestFollow = new FollowRequest(user, user2, authToken);
         responseFollow = new FollowResponse();
 
         mockFollowService = Mockito.mock(FollowService.class);
@@ -52,7 +55,9 @@ class UserActivityPresenterTest {
     }
 
     public void unfollowSetup() throws IOException, TweeterRemoteException {
-        requestUnfollow = new UnfollowRequest(user, user2);
+        AuthToken authToken = new AuthToken(123, "test");
+
+        requestUnfollow = new UnfollowRequest(user, user2, authToken);
         responseUnfollow = new UnfollowResponse();
 
         mockUnfollowService = Mockito.mock(UnfollowService.class);

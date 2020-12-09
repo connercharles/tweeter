@@ -22,7 +22,9 @@ public class LogoutHandlerTest {
 
     @BeforeEach
     public void setup() {
-        request = new LogoutRequest(new AuthToken());
+        AuthToken auth = new AuthToken(123, "test");
+
+        request = new LogoutRequest(auth);
         expectedResponse = new LogoutResponse();
 
         mockLogoutService = Mockito.mock(LogoutServiceImpl.class);

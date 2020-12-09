@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
@@ -29,10 +30,11 @@ public class UnfollowServiceProxyTest {
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
         User userUnfollows = new User("Ben", "Dover",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
+        AuthToken auth = new AuthToken(123, "test");
 
         // Setup request objects to use in the tests
-        validRequest = new UnfollowRequest(user, userUnfollows);
-        invalidRequest = new UnfollowRequest(null, null);
+        validRequest = new UnfollowRequest(user, userUnfollows, auth);
+        invalidRequest = new UnfollowRequest(null, null, auth);
 
         // Setup a mock ServerFacade that will return known responses
         successResponse = new UnfollowResponse();

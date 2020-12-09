@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.view;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -66,7 +67,7 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
 
                     RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, username, password, imageEncoded);
                     RegisterTask registerTask = new RegisterTask(presenter, RegisterFragment.this);
-                    registerTask.execute(registerRequest);
+                    registerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, registerRequest);
 
                 } else {
                     Toast.makeText(getContext(), "Please fill out everything and take picture", Toast.LENGTH_LONG).show();
@@ -98,9 +99,6 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
             photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
             imageBytes = stream.toByteArray();
             imageEncoded = Base64.getEncoder().encodeToString(imageBytes);
-
-//            photo.recycle();
-//            imageBytes = (byte[])data.getExtras().get("data");
         }
     }
 

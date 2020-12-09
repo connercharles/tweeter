@@ -25,7 +25,7 @@ class PostPresenterTest {
         User author = new User("Ben", "Dover",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken(123, "test");
         String message = "So there I was...";
 
         request = new PostRequest(authToken, author, message);

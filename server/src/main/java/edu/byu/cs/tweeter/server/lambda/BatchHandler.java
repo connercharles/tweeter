@@ -16,39 +16,19 @@ import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 import edu.byu.cs.tweeter.server.dao.PagedResults;
 import edu.byu.cs.tweeter.server.dao.StatusDAO;
 import edu.byu.cs.tweeter.server.dao.UserDAO;
+import edu.byu.cs.tweeter.server.service.Hasher;
 
 //public class BatchHandler implements RequestHandler<FeedRequest, void> {
 public class BatchHandler {
     public static void main(String[] args){
-//        FollowingDAO fd = new FollowingDAO();
-//        fd.put("@bendover", "@guy1");
-//        fd.put("@bendover", "@guy2");
-//        fd.put("@bendover", "@guy3");
-//        fd.put("@bendover", "@guy4");
-//        fd.put("@bendover", "@guy5");
-//        fd.put("@bendover", "@guy6");
-
-
-
-//        System.out.println(fd.isFollowing("@bendover", "@guy1"));
-
-//        UserDAO userDAO = new UserDAO();
-//        User user = userDAO.get("@bendover");
-//        System.out.println(user.toString());
-//        userDAO.put("Ben", "Dover", "@bendover", "https://tweeter-profile-pix-con-charles.s3-us-west-2.amazonaws.com/%40testuser2.png", "pass");
-
-//        System.out.println(userDAO.get("sdlfkj"));
+        UserDAO userDAO = new UserDAO();
+        Hasher h = new Hasher();
+        String pass = h.hash("poop");
+        userDAO.put("Ben", "Dover", "@bendover", "https://i.pinimg.com/originals/50/cb/08/50cb085f28faa563a5e286ecadd3d1bf.jpg", pass, 0, 0);
 
         BatchWriter bw = new BatchWriter();
         bw.fillDatabase();
 
-//        StatusDAO sd = new StatusDAO();
-//        sd.put("@guy1", "yo this is @guy1", Calendar.getInstance().getTimeInMillis());
-//        sd.put("@guy2", "yo this is @guy2", Calendar.getInstance().getTimeInMillis());
-//        sd.put("@guy3", "yo this is @guy3", Calendar.getInstance().getTimeInMillis());
-//        sd.put("@guy4", "yo this is @guy4", Calendar.getInstance().getTimeInMillis());
-//        sd.put("@guy5", "yo this is @guy5", Calendar.getInstance().getTimeInMillis());
-//        sd.put("@guy6", "yo this is @guy6", Calendar.getInstance().getTimeInMillis());
     }
 
 ////    @Override
@@ -59,7 +39,6 @@ public class BatchHandler {
     public BatchWriter getService() { return new BatchWriter(); }
 
 
-    // TODO: here are test cases
     public void warmLambdas(){
         final String n = "nope";
         try{
@@ -110,11 +89,11 @@ public class BatchHandler {
     }
 
     public void testUserDAO(){
-//        getService().fillDatabase();
-//        UserDAO userDAO = new UserDAO();
-////        userDAO.put("Ben", "Dover", "@bendover", "www.google.com", "chubbycheeks");
-//        User user = userDAO.get("@bendover");
-//        user.getAlias();
+        getService().fillDatabase();
+        UserDAO userDAO = new UserDAO();
+        userDAO.put("Ben", "Dover", "@bendover", "www.google.com", "chubbycheeks", 6, 30);
+        User user = userDAO.get("@bendover");
+        user.getAlias();
     }
 
     public void testFollowingDAO(){
